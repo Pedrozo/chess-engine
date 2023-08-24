@@ -3,7 +3,7 @@
 
 namespace chess {
 
-enum class Player {
+enum Player {
     WHITE,
     BLACK
 };
