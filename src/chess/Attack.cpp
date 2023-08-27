@@ -12,7 +12,7 @@ struct ComputedRankAttacks {
         for (Square s : Squares::all()) {
             for (std::size_t i = 0; i < 256; i++) {
                 BitBoard occupied = BitBoard(i) << Rank::of(s).first().index();
-                BitBoard result = BitBoardSquare(s);
+                BitBoard result(0);
 
                 BitBoardSquare current = s;
                 while ((current & File::right().bitboard()).isEmpty()) {
@@ -44,7 +44,7 @@ struct ComputedFileAttacks {
     ComputedFileAttacks() : computed() {
         for (Square s : Squares::all()) {
             for (std::size_t i = 0; i < 256; i++) {
-                BitBoard result = BitBoardSquare(s);
+                BitBoard result(0);
                 BitBoard occupied(0);
                 BitBoard flat(i);
                 auto occupiedFile = File::of(s).bitboardSquares();
@@ -92,7 +92,7 @@ struct ComputedDiagonalAttacks {
     ComputedDiagonalAttacks() : computed() {
         for (Square s : Squares::all()) {
             for (std::size_t i = 0; i < 256; i++) {
-                BitBoard result = BitBoardSquare(s);
+                BitBoard result(0);
                 BitBoard occupied(0);
                 BitBoard flat(i);
                 auto occupiedDiagonal = Diagonal::of(s).bitboardSquares();
@@ -140,7 +140,7 @@ struct ComputedAntiDiagonalAttacks {
     ComputedAntiDiagonalAttacks() : computed() {
         for (Square s : Squares::all()) {
             for (std::size_t i = 0; i < 256; i++) {
-                BitBoard result = BitBoardSquare(s);
+                BitBoard result(0);
                 BitBoard occupied(0);
                 BitBoard flat(i);
                 auto occupiedAntiDiagonal = AntiDiagonal::of(s).bitboardSquares();

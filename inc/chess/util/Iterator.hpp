@@ -1,6 +1,8 @@
 #ifndef CHESS_UTIL_ITERATOR_HPP
 #define CHESS_UTIL_ITERATOR_HPP
 
+#include <utility>
+
 namespace chess::util {
     
 template<typename T, typename Next>

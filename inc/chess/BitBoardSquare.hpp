@@ -13,6 +13,8 @@ public:
 
     constexpr BitBoardSquare(Square square) : bitboard_(1UL << square.index()) {}
 
+    Square square() const;
+
     constexpr BitBoardSquare operator<<(std::size_t pos) const noexcept {
         return BitBoardSquare(bitboard_ << pos);
     }

@@ -51,6 +51,14 @@ public:
         antidiagonalRotated_.flip(s);
     }
 
+    friend bool operator==(const OccupiedBitBoard& a, const OccupiedBitBoard& b) {
+        return a.normal_ == b.normal_;
+    }
+
+    friend bool operator!=(const OccupiedBitBoard& a, const OccupiedBitBoard& b) {
+        return a.normal_ != b.normal_;
+    }
+
 private:
     BitBoard normal_;
     RotatedBitBoard<rotation::FileRotation> fileRotated_;
