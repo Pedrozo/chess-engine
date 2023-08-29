@@ -1,5 +1,5 @@
-#ifndef CHESS_OCCUPIEDBITBOARD_HPP
-#define CHESS_OCCUPIEDBITBOARD_HPP
+#ifndef CHESS_OCCUPANCYBITBOARD_HPP
+#define CHESS_OCCUPANCYBITBOARD_HPP
 
 #include "chess/BitBoard.hpp"
 #include "chess/Square.hpp"
@@ -10,9 +10,9 @@
 
 namespace chess {
 
-class OccupiedBitBoard {
+class OccupancyBitBoard {
 public:
-    OccupiedBitBoard() : normal_(0UL), fileRotated_(), diagonalRotated_(), antidiagonalRotated_() {}
+    OccupancyBitBoard() : normal_(0UL), fileRotated_(), diagonalRotated_(), antidiagonalRotated_() {}
 
     BitBoard normal() const noexcept {
         return normal_;
@@ -51,11 +51,11 @@ public:
         antidiagonalRotated_.flip(s);
     }
 
-    friend bool operator==(const OccupiedBitBoard& a, const OccupiedBitBoard& b) {
+    friend bool operator==(const OccupancyBitBoard& a, const OccupancyBitBoard& b) {
         return a.normal_ == b.normal_;
     }
 
-    friend bool operator!=(const OccupiedBitBoard& a, const OccupiedBitBoard& b) {
+    friend bool operator!=(const OccupancyBitBoard& a, const OccupancyBitBoard& b) {
         return a.normal_ != b.normal_;
     }
 
@@ -68,4 +68,4 @@ private:
 
 } // namespace chess
 
-#endif // CHESS_OCCUPIEDBITBOARD_HPP
+#endif // CHESS_OCCUPANCYBITBOARD_HPP

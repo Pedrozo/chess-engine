@@ -6,7 +6,7 @@
 #include "chess/RegularMove.hpp"
 #include "chess/CastlingMove.hpp"
 #include "chess/PlayerPiece.hpp"
-#include "chess/OccupiedBitBoard.hpp"
+#include "chess/OccupancyBitBoard.hpp"
 #include "chess/Attack.hpp"
 
 namespace chess {
@@ -15,12 +15,12 @@ class PositionBitBoards {
 public:
     explicit PositionBitBoards(std::initializer_list<std::pair<Square, PlayerPiece>> pieces);
 
-    const OccupiedBitBoard& occupied() const noexcept {
-        return occupied_;
+    const OccupancyBitBoard& occupancy() const noexcept {
+        return occupancy_;
     }
 
-    BitBoard occupied(Player player) const noexcept {
-        return players_[player].occupied;
+    BitBoard occupancy(Player player) const noexcept {
+        return players_[player].occupancy;
     }
 
     BitBoard attack(Player player) const noexcept {
@@ -55,7 +55,7 @@ public:
 private:
     struct PlayerBitBoards {
         BitBoard pieces[6];
-        BitBoard occupied;
+        BitBoard occupancy;
         BitBoard attack;
     };
 
@@ -67,7 +67,7 @@ private:
 
     void updateAttack();
 
-    OccupiedBitBoard occupied_;
+    OccupancyBitBoard occupancy_;
     BitBoard previouslyMoved_;
     PlayerBitBoards players_[2];
 };

@@ -45,7 +45,7 @@ TEST_CASE("queen capturing test") {
 
     CHECK(pos.previouslyMoved() == BitBoard(0));
 
-    BitBoard expectedWhiteOccupied = makeBitBoard({
+    BitBoard expectedWhiteOccupancy = makeBitBoard({
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 1, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
@@ -55,9 +55,9 @@ TEST_CASE("queen capturing test") {
         0, 1, 0, 0, 0, 0, 0, 1,
         0, 1, 0, 0, 0, 1, 0, 0
     });
-    CHECK(pos.occupied(Player::WHITE) == expectedWhiteOccupied);
+    CHECK(pos.occupancy(Player::WHITE) == expectedWhiteOccupancy);
 
-    BitBoard expectedBlackOccupied = makeBitBoard({
+    BitBoard expectedBlackOccupancy = makeBitBoard({
         0, 0, 0, 0, 0, 0, 0, 1,
         0, 0, 0, 0, 0, 1, 0, 1,
         0, 0, 0, 0, 0, 0, 1, 0,
@@ -67,9 +67,9 @@ TEST_CASE("queen capturing test") {
         0, 0, 0, 1, 0, 0, 0, 0,
         0, 0, 0, 1, 0, 0, 0, 0
     });
-    CHECK(pos.occupied(Player::BLACK) == expectedBlackOccupied);
+    CHECK(pos.occupancy(Player::BLACK) == expectedBlackOccupancy);
 
-    CHECK(pos.occupied().normal() == (expectedWhiteOccupied | expectedBlackOccupied));
+    CHECK(pos.occupancy().normal() == (expectedWhiteOccupancy | expectedBlackOccupancy));
 
     CHECK(pos.pieces(WHITE_PAWN) == BitBoard({h2, f3, g3}));
     CHECK(pos.pieces(BLACK_PAWN) == BitBoard({b5, f7, g6, h7}));
@@ -113,11 +113,11 @@ TEST_CASE("queen capturing test") {
 
     pos.makeMove(RegularMove(f1, c4), WHITE_BISHOP, BLACK_QUEEN);
 
-    expectedWhiteOccupied ^= BitBoard({f1, c4});
-    CHECK(pos.occupied(Player::WHITE) == expectedWhiteOccupied);
+    expectedWhiteOccupancy ^= BitBoard({f1, c4});
+    CHECK(pos.occupancy(Player::WHITE) == expectedWhiteOccupancy);
 
-    expectedBlackOccupied &= ~BitBoard({c4});
-    CHECK(pos.occupied(Player::BLACK) == expectedBlackOccupied);
+    expectedBlackOccupancy &= ~BitBoard({c4});
+    CHECK(pos.occupancy(Player::BLACK) == expectedBlackOccupancy);
 
     CHECK(pos.pieces(WHITE_PAWN) == BitBoard({h2, f3, g3}));
     CHECK(pos.pieces(BLACK_PAWN) == BitBoard({b5, f7, g6, h7}));
@@ -375,9 +375,9 @@ TEST_CASE("test castling") {
 
     pos.makeMove(CastlingMove(Player::WHITE, CastlingMove::KING_SIDE));
 
-    CHECK(pos.occupied().normal() == (BitBoard({g1, f1, a1, e8, a8, h8}) | whitePawns | blackPawns));
-    CHECK(pos.occupied(Player::WHITE) == (BitBoard({g1, f1, a1}) | whitePawns));
-    CHECK(pos.occupied(Player::BLACK) == (BitBoard({e8, a8, h8}) | blackPawns));
+    CHECK(pos.occupancy().normal() == (BitBoard({g1, f1, a1, e8, a8, h8}) | whitePawns | blackPawns));
+    CHECK(pos.occupancy(Player::WHITE) == (BitBoard({g1, f1, a1}) | whitePawns));
+    CHECK(pos.occupancy(Player::BLACK) == (BitBoard({e8, a8, h8}) | blackPawns));
     CHECK(pos.pieces(WHITE_KING) == BitBoard({g1}));
     CHECK(pos.pieces(WHITE_ROOK) == BitBoard({a1, f1}));
     CHECK(pos.pieces(BLACK_KING) == BitBoard({e8}));
@@ -397,9 +397,9 @@ TEST_CASE("test castling") {
 
     pos.makeMove(CastlingMove(Player::WHITE, CastlingMove::QUEEN_SIDE));
 
-    CHECK(pos.occupied().normal() == (BitBoard({c1, h1, d1, e8, a8, h8}) | whitePawns | blackPawns));
-    CHECK(pos.occupied(Player::WHITE) == (BitBoard({c1, h1, d1}) | whitePawns));
-    CHECK(pos.occupied(Player::BLACK) == (BitBoard({e8, a8, h8}) | blackPawns));
+    CHECK(pos.occupancy().normal() == (BitBoard({c1, h1, d1, e8, a8, h8}) | whitePawns | blackPawns));
+    CHECK(pos.occupancy(Player::WHITE) == (BitBoard({c1, h1, d1}) | whitePawns));
+    CHECK(pos.occupancy(Player::BLACK) == (BitBoard({e8, a8, h8}) | blackPawns));
     CHECK(pos.pieces(WHITE_KING) == BitBoard({c1}));
     CHECK(pos.pieces(WHITE_ROOK) == BitBoard({d1, h1}));
     CHECK(pos.pieces(BLACK_KING) == BitBoard({e8}));
@@ -419,9 +419,9 @@ TEST_CASE("test castling") {
 
     pos.makeMove(CastlingMove(Player::BLACK, CastlingMove::KING_SIDE));
 
-    CHECK(pos.occupied().normal() == (BitBoard({c1, h1, d1, g8, a8, f8}) | whitePawns | blackPawns));
-    CHECK(pos.occupied(Player::WHITE) == (BitBoard({c1, h1, d1}) | whitePawns));
-    CHECK(pos.occupied(Player::BLACK) == (BitBoard({g8, a8, f8}) | blackPawns));
+    CHECK(pos.occupancy().normal() == (BitBoard({c1, h1, d1, g8, a8, f8}) | whitePawns | blackPawns));
+    CHECK(pos.occupancy(Player::WHITE) == (BitBoard({c1, h1, d1}) | whitePawns));
+    CHECK(pos.occupancy(Player::BLACK) == (BitBoard({g8, a8, f8}) | blackPawns));
     CHECK(pos.pieces(WHITE_KING) == BitBoard({c1}));
     CHECK(pos.pieces(WHITE_ROOK) == BitBoard({d1, h1}));
     CHECK(pos.pieces(BLACK_KING) == BitBoard({g8}));
@@ -441,9 +441,9 @@ TEST_CASE("test castling") {
 
     pos.makeMove(CastlingMove(Player::BLACK, CastlingMove::QUEEN_SIDE));
 
-    CHECK(pos.occupied().normal() == (BitBoard({c1, h1, d1, c8, d8, h8}) | whitePawns | blackPawns));
-    CHECK(pos.occupied(Player::WHITE) == (BitBoard({c1, h1, d1}) | whitePawns));
-    CHECK(pos.occupied(Player::BLACK) == (BitBoard({c8, d8, h8}) | blackPawns));
+    CHECK(pos.occupancy().normal() == (BitBoard({c1, h1, d1, c8, d8, h8}) | whitePawns | blackPawns));
+    CHECK(pos.occupancy(Player::WHITE) == (BitBoard({c1, h1, d1}) | whitePawns));
+    CHECK(pos.occupancy(Player::BLACK) == (BitBoard({c8, d8, h8}) | blackPawns));
     CHECK(pos.pieces(WHITE_KING) == BitBoard({c1}));
     CHECK(pos.pieces(WHITE_ROOK) == BitBoard({d1, h1}));
     CHECK(pos.pieces(BLACK_KING) == BitBoard({c8}));

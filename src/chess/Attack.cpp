@@ -11,7 +11,7 @@ struct ComputedRankAttacks {
     ComputedRankAttacks() : computed() {
         for (Square s : Squares::all()) {
             for (std::size_t i = 0; i < 256; i++) {
-                BitBoard occupied = BitBoard(i) << Rank::of(s).first().index();
+                BitBoard occupancy = BitBoard(i) << Rank::of(s).first().index();
                 BitBoard result(0);
 
                 BitBoardSquare current = s;
@@ -19,7 +19,7 @@ struct ComputedRankAttacks {
                     current = east(current);
                     result |= current;
 
-                    if (!(current & occupied).isEmpty())
+                    if (!(current & occupancy).isEmpty())
                         break;
                 }
 
@@ -28,7 +28,7 @@ struct ComputedRankAttacks {
                     current = west(current);
                     result |= current;
 
-                    if (!(current & occupied).isEmpty())
+                    if (!(current & occupancy).isEmpty())
                         break;
                 }
 
@@ -45,18 +45,18 @@ struct ComputedFileAttacks {
         for (Square s : Squares::all()) {
             for (std::size_t i = 0; i < 256; i++) {
                 BitBoard result(0);
-                BitBoard occupied(0);
+                BitBoard occupancy(0);
                 BitBoard flat(i);
-                auto occupiedFile = File::of(s).bitboardSquares();
+                auto occupancyFile = File::of(s).bitboardSquares();
                 auto flatRank = Rank::bottom().bitboardSquares();
 
-                auto fileIt = occupiedFile.begin();
-                auto fileEnd = occupiedFile.end();
+                auto fileIt = occupancyFile.begin();
+                auto fileEnd = occupancyFile.end();
                 auto rankIt = flatRank.begin();
 
                 while (fileIt != fileEnd) {
                     if (!(flat & (*rankIt)).isEmpty())
-                        occupied |= *fileIt;
+                        occupancy |= *fileIt;
 
                     ++fileIt;
                     ++rankIt;
@@ -67,7 +67,7 @@ struct ComputedFileAttacks {
                     current = north(current);
                     result |= current;
 
-                    if (!(current & occupied).isEmpty())
+                    if (!(current & occupancy).isEmpty())
                         break;
                 }
 
@@ -76,7 +76,7 @@ struct ComputedFileAttacks {
                     current = south(current);
                     result |= current;
 
-                    if (!(current & occupied).isEmpty())
+                    if (!(current & occupancy).isEmpty())
                         break;
                 }
 
@@ -93,18 +93,18 @@ struct ComputedDiagonalAttacks {
         for (Square s : Squares::all()) {
             for (std::size_t i = 0; i < 256; i++) {
                 BitBoard result(0);
-                BitBoard occupied(0);
+                BitBoard occupancy(0);
                 BitBoard flat(i);
-                auto occupiedDiagonal = Diagonal::of(s).bitboardSquares();
+                auto occupancyDiagonal = Diagonal::of(s).bitboardSquares();
                 auto flatRank = Rank::bottom().bitboardSquares();
 
-                auto diagonalIt = occupiedDiagonal.begin();
-                auto diagonalEnd = occupiedDiagonal.end();
+                auto diagonalIt = occupancyDiagonal.begin();
+                auto diagonalEnd = occupancyDiagonal.end();
                 auto rankIt = flatRank.begin();
 
                 while (diagonalIt != diagonalEnd) {
                     if (!(flat & (*rankIt)).isEmpty())
-                        occupied |= *diagonalIt;
+                        occupancy |= *diagonalIt;
 
                     ++diagonalIt;
                     ++rankIt;
@@ -115,7 +115,7 @@ struct ComputedDiagonalAttacks {
                     current = northwest(current);
                     result |= current;
 
-                    if (!(current & occupied).isEmpty())
+                    if (!(current & occupancy).isEmpty())
                         break;
                 }
 
@@ -124,7 +124,7 @@ struct ComputedDiagonalAttacks {
                     current = southeast(current);
                     result |= current;
 
-                    if (!(current & occupied).isEmpty())
+                    if (!(current & occupancy).isEmpty())
                         break;
                 }
 
@@ -141,18 +141,18 @@ struct ComputedAntiDiagonalAttacks {
         for (Square s : Squares::all()) {
             for (std::size_t i = 0; i < 256; i++) {
                 BitBoard result(0);
-                BitBoard occupied(0);
+                BitBoard occupancy(0);
                 BitBoard flat(i);
-                auto occupiedAntiDiagonal = AntiDiagonal::of(s).bitboardSquares();
+                auto occupancyAntiDiagonal = AntiDiagonal::of(s).bitboardSquares();
                 auto flatRank = Rank::bottom().bitboardSquares();
 
-                auto antidiagonalIt = occupiedAntiDiagonal.begin();
-                auto antidiagonalEnd = occupiedAntiDiagonal.end();
+                auto antidiagonalIt = occupancyAntiDiagonal.begin();
+                auto antidiagonalEnd = occupancyAntiDiagonal.end();
                 auto rankIt = flatRank.begin();
 
                 while (antidiagonalIt != antidiagonalEnd) {
                     if (!(flat & (*rankIt)).isEmpty())
-                        occupied |= *antidiagonalIt;
+                        occupancy |= *antidiagonalIt;
 
                     ++antidiagonalIt;
                     ++rankIt;
@@ -163,7 +163,7 @@ struct ComputedAntiDiagonalAttacks {
                     current = northeast(current);
                     result |= current;
 
-                    if (!(current & occupied).isEmpty())
+                    if (!(current & occupancy).isEmpty())
                         break;
                 }
 
@@ -172,7 +172,7 @@ struct ComputedAntiDiagonalAttacks {
                     current = southwest(current);
                     result |= current;
 
-                    if (!(current & occupied).isEmpty())
+                    if (!(current & occupancy).isEmpty())
                         break;
                 }
 
@@ -257,34 +257,34 @@ struct ComputedKingAttacks {
     BitBoard computed[64];
 };
 
-static BitBoard rankAttack(Square s, BitBoard occupied) noexcept {
+static BitBoard rankAttack(Square s, BitBoard occupancy) noexcept {
     static ComputedRankAttacks computed;
-    std::size_t i = ((occupied >> Rank::of(s).first().index()) & Rank::bottom().bitboard()).to<std::size_t>();
+    std::size_t i = ((occupancy >> Rank::of(s).first().index()) & Rank::bottom().bitboard()).to<std::size_t>();
     return computed.computed[s][i];
 }
 
-static BitBoard fileAttack(Square s, RotatedBitBoard<rotation::FileRotation> occupied) noexcept {
+static BitBoard fileAttack(Square s, RotatedBitBoard<rotation::FileRotation> occupancy) noexcept {
     static ComputedFileAttacks computed;
-    return computed.computed[s][occupied.line(s)];
+    return computed.computed[s][occupancy.line(s)];
 }
 
-static BitBoard diagonalAttack(Square s, RotatedBitBoard<rotation::DiagonalRotation> occupied) noexcept {
+static BitBoard diagonalAttack(Square s, RotatedBitBoard<rotation::DiagonalRotation> occupancy) noexcept {
     static ComputedDiagonalAttacks computed;
-    return computed.computed[s][occupied.line(s)];
+    return computed.computed[s][occupancy.line(s)];
 }
 
-static BitBoard antiDiagonalAttack(Square s, RotatedBitBoard<rotation::AntiDiagonalRotation> occupied) noexcept {
+static BitBoard antiDiagonalAttack(Square s, RotatedBitBoard<rotation::AntiDiagonalRotation> occupancy) noexcept {
     static ComputedAntiDiagonalAttacks computed;
-    return computed.computed[s][occupied.line(s)];
+    return computed.computed[s][occupancy.line(s)];
 }
 
-BitBoard rookAttack(Square s, BitBoard occupied, RotatedBitBoard<rotation::FileRotation> rotatedOccupied) noexcept {
-    return rankAttack(s, occupied) | fileAttack(s, rotatedOccupied);
+BitBoard rookAttack(Square s, BitBoard occupancy, RotatedBitBoard<rotation::FileRotation> rotatedOccupancy) noexcept {
+    return rankAttack(s, occupancy) | fileAttack(s, rotatedOccupancy);
 }
 
-BitBoard bishopAttack(Square s, RotatedBitBoard<rotation::DiagonalRotation> diagonalRotatedOccupied,
-                      RotatedBitBoard<rotation::AntiDiagonalRotation> antidiagonalRotatedOccupied) noexcept {
-    return diagonalAttack(s, diagonalRotatedOccupied) | antiDiagonalAttack(s, antidiagonalRotatedOccupied);
+BitBoard bishopAttack(Square s, RotatedBitBoard<rotation::DiagonalRotation> diagonalRotatedOccupancy,
+                      RotatedBitBoard<rotation::AntiDiagonalRotation> antidiagonalRotatedOccupancy) noexcept {
+    return diagonalAttack(s, diagonalRotatedOccupancy) | antiDiagonalAttack(s, antidiagonalRotatedOccupancy);
 }
 
 BitBoard knightAttack(Square s) noexcept {
@@ -314,9 +314,9 @@ BitBoard pawnsAttack(Player player, BitBoard pawns) noexcept {
     return attack;
 }
 
-BitBoard queenAttack(Square s, const OccupiedBitBoard& occupied) noexcept {
-    return bishopAttack(s, occupied.diagonalRotated(), occupied.antiDiagonalRotated()) |
-           rookAttack(s, occupied.normal(), occupied.fileRotated());
+BitBoard queenAttack(Square s, const OccupancyBitBoard& occupancy) noexcept {
+    return bishopAttack(s, occupancy.diagonalRotated(), occupancy.antiDiagonalRotated()) |
+           rookAttack(s, occupancy.normal(), occupancy.fileRotated());
 }
 
 } // namespace chess

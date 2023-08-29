@@ -7,13 +7,13 @@ namespace chess {
 
 class RegularMove {
 public:
-    RegularMove(Square from, Square to) : from_(from), to_(to) {}
+    constexpr RegularMove(Square from, Square to) : from_(from), to_(to) {}
 
-    Square from() const noexcept {
+    constexpr Square from() const noexcept {
         return from_;
     }
 
-    Square to() const noexcept {
+    constexpr Square to() const noexcept {
         return to_;
     }
 
