@@ -31,6 +31,30 @@ private:
     int playerPiece_;
 };
 
+constexpr PlayerPiece WHITE_KING = PlayerPiece(WHITE, KING);
+
+constexpr PlayerPiece WHITE_QUEEN = PlayerPiece(WHITE, QUEEN);
+
+constexpr PlayerPiece WHITE_ROOK = PlayerPiece(WHITE, ROOK);
+
+constexpr PlayerPiece WHITE_BISHOP = PlayerPiece(WHITE, BISHOP);
+
+constexpr PlayerPiece WHITE_KNIGHT = PlayerPiece(WHITE, KNIGHT);
+
+constexpr PlayerPiece WHITE_PAWN = PlayerPiece(WHITE, PAWN);
+
+constexpr PlayerPiece BLACK_KING = PlayerPiece(BLACK, KING);
+
+constexpr PlayerPiece BLACK_QUEEN = PlayerPiece(BLACK, QUEEN);
+
+constexpr PlayerPiece BLACK_ROOK = PlayerPiece(BLACK, ROOK);
+
+constexpr PlayerPiece BLACK_BISHOP = PlayerPiece(BLACK, BISHOP);
+
+constexpr PlayerPiece BLACK_KNIGHT = PlayerPiece(BLACK, KNIGHT);
+
+constexpr PlayerPiece BLACK_PAWN = PlayerPiece(BLACK, PAWN);
+
 } // namespace chess
 
 #endif // CHESS_PLAYERPIECE_HPP

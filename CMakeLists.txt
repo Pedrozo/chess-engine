@@ -4,8 +4,8 @@ project(chess-engine VERSION 0.1.0 LANGUAGES C CXX)
 add_library(chess-engine
             src/chess/Attack.cpp
             src/chess/BitBoardSquare.cpp
-            src/chess/searching/Position.cpp
-            src/chess/searching/PreComputedMove.cpp)
+            src/chess/PositionBitBoards.cpp
+            src/chess/PositionSquares.cpp)
 
 target_include_directories(chess-engine PUBLIC ./inc)
 set_target_properties(chess-engine PROPERTIES CXX_STANDARD 17)

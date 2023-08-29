@@ -2,6 +2,7 @@
 #define CHESS_BITBOARD_HPP
 
 #include <cstdint>
+#include <initializer_list>
 #include "chess/BitBoardSquare.hpp"
 
 namespace chess {
@@ -13,6 +14,11 @@ public:
     class Iterator;
 
     constexpr BitBoard() : bitboard_() {}
+
+    explicit constexpr BitBoard(std::initializer_list<Square> squares) : bitboard_(0) {
+        for (Square square : squares)
+            set(square);
+    }
 
     template<typename T>
     explicit constexpr BitBoard(T bitboard) : bitboard_(static_cast<Type>(bitboard)) {}
