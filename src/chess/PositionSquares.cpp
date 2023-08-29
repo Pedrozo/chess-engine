@@ -12,8 +12,14 @@ std::optional<PlayerPiece> PositionSquares::makeMove(const RegularMove& regularM
 void PositionSquares::makeMove(const CastlingMove& castlingMove) {
     squares_[castlingMove.kingSquare()] = std::nullopt;
     squares_[castlingMove.rookSquare()] = std::nullopt;
-    squares_[castlingMove.targetKingSquare()] = std::make_optional(PlayerPiece(castlingMove.player(), Piece::KING));
-    squares_[castlingMove.targetRookSquare()] = std::make_optional(PlayerPiece(castlingMove.player(), Piece::ROOK));
+    squares_[castlingMove.targetKingSquare()] = PlayerPiece(castlingMove.player(), Piece::KING);
+    squares_[castlingMove.targetRookSquare()] = PlayerPiece(castlingMove.player(), Piece::ROOK);
+}
+
+void PositionSquares::makeMove(const EnPassantMove& enPassantMove) {
+    squares_[enPassantMove.to()] = squares_[enPassantMove.from()];
+    squares_[enPassantMove.from()] = std::nullopt;
+    squares_[enPassantMove.captured()] = std::nullopt;
 }
 
 void PositionSquares::unmakeMove(const RegularMove& regularMove) {
@@ -26,10 +32,16 @@ void PositionSquares::unmakeMove(const RegularMove& regularMove, PlayerPiece cap
 }
 
 void PositionSquares::unmakeMove(const CastlingMove& castlingMove) {
-    squares_[castlingMove.kingSquare()] = std::make_optional(PlayerPiece(castlingMove.player(), Piece::KING));
-    squares_[castlingMove.rookSquare()] = std::make_optional(PlayerPiece(castlingMove.player(), Piece::ROOK));
+    squares_[castlingMove.kingSquare()] = PlayerPiece(castlingMove.player(), Piece::KING);
+    squares_[castlingMove.rookSquare()] = PlayerPiece(castlingMove.player(), Piece::ROOK);
     squares_[castlingMove.targetKingSquare()] = std::nullopt;
     squares_[castlingMove.targetRookSquare()] = std::nullopt;
+}
+
+void PositionSquares::unmakeMove(const EnPassantMove& enPassantMove) {
+    squares_[enPassantMove.from()] = squares_[enPassantMove.to()];
+    squares_[enPassantMove.to()] = std::nullopt;
+    squares_[enPassantMove.captured()] = PlayerPiece(opponent(enPassantMove.player()), Piece::PAWN);
 }
 
 } // namespace chess

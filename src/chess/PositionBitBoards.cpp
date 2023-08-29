@@ -49,6 +49,22 @@ void PositionBitBoards::makeMoveImpl(const RegularMove& regularMove, PlayerPiece
 
     players_[movedPiece.player()].occupancy ^= movedBits;
     players_[movedPiece.player()].pieces[movedPiece.piece()] ^= movedBits;
+
+    if (movedPiece.piece() != Piece::PAWN) {
+        passant_ = std::nullopt;
+        return;
+    }
+
+    constexpr BitBoard passantRanks[2] = {
+        Rank::of(a2).bitboard() | Rank::of(a4).bitboard(),
+        Rank::of(a7).bitboard() | Rank::of(a5).bitboard()
+    };
+
+    if ((movedBits & passantRanks[movedPiece.player()]) == movedBits) {
+        passant_ = std::make_optional(regularMove.to());
+    } else {
+        passant_ = std::nullopt;
+    }
 }
 
 void PositionBitBoards::makeMoveImpl(const RegularMove& regularMove, PlayerPiece movedPiece, PlayerPiece capturedPiece) {
@@ -68,9 +84,33 @@ void PositionBitBoards::makeMoveImpl(const CastlingMove& castlingMove) {
     occupancy_.reset(castlingMove.rookSquare());
     occupancy_.set(castlingMove.targetRookSquare());
 
+    previouslyMoved_ |= (kingBit| rookBit | targetKingBit | targetRookBit);
+
     players_[castlingMove.player()].occupancy ^= (kingBit | rookBit | targetKingBit | targetRookBit);
     players_[castlingMove.player()].pieces[Piece::ROOK] ^= (rookBit | targetRookBit);
     players_[castlingMove.player()].pieces[Piece::KING] ^= (kingBit | targetKingBit);
+
+    passant_ = std::nullopt;
+}
+
+void PositionBitBoards::makeMoveImpl(const EnPassantMove& enPassantMove) {
+    BitBoardSquare currentPawnBit(enPassantMove.from());
+    BitBoardSquare opponentPawnBit(enPassantMove.captured());
+    BitBoardSquare newPawnBit(enPassantMove.to());
+
+    occupancy_.set(enPassantMove.to());
+    occupancy_.reset(enPassantMove.captured());
+    occupancy_.reset(enPassantMove.from());
+
+    players_[enPassantMove.player()].occupancy ^= (currentPawnBit | newPawnBit);
+    players_[opponent(enPassantMove.player())].occupancy ^= opponentPawnBit;
+
+    previouslyMoved_ |= (currentPawnBit | opponentPawnBit | newPawnBit);
+
+    players_[enPassantMove.player()].pieces[Piece::PAWN] ^= (currentPawnBit | newPawnBit);
+    players_[opponent(enPassantMove.player())].pieces[Piece::PAWN] ^= opponentPawnBit;
+
+    passant_ = std::nullopt;
 }
 
 void PositionBitBoards::updateAttack() {

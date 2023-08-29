@@ -459,3 +459,79 @@ TEST_CASE("test castling") {
         0, 0, 0, 0, 0, 0, 0, 0
     }));
 }
+
+TEST_CASE("en passant triggering cases") {
+    PositionBitBoards pos({
+        {e1, WHITE_KING},
+        {e4, WHITE_PAWN},
+        {h4, WHITE_PAWN},
+        {b5, WHITE_PAWN},
+        {h1, WHITE_ROOK},
+        {e8, BLACK_KING},
+        {a7, BLACK_PAWN},
+        {d7, BLACK_PAWN},
+        {g7, BLACK_PAWN},
+    });
+
+    pos.makeMove(RegularMove(a7, a5), BLACK_PAWN);
+
+    PositionBitBoards backup = pos;
+
+    REQUIRE(pos.passant().has_value());
+    CHECK(pos.passant().value() == a5);
+
+    pos.makeMove(RegularMove(e4, e5), WHITE_PAWN);
+
+    CHECK(!pos.passant().has_value());
+
+    pos = backup;
+
+    REQUIRE(pos.passant().has_value());
+    CHECK(pos.passant().value() == a5);
+
+    pos.makeMove(CastlingMove(Player::WHITE, CastlingMove::KING_SIDE));
+
+    CHECK(!pos.passant().has_value());
+}
+
+TEST_CASE("en passant captures") {
+    PositionBitBoards pos({
+        {b5, WHITE_PAWN},
+        {d5, WHITE_PAWN},
+        {c7, BLACK_PAWN},
+        {e7, BLACK_PAWN},
+        {f7, BLACK_PAWN},
+    });
+
+    PositionBitBoards backup = pos;
+
+    pos.makeMove(RegularMove(c7, c5), BLACK_PAWN); 
+
+    REQUIRE(pos.passant().has_value());
+    REQUIRE(pos.passant().value() == c5);
+
+    pos.makeMove(EnPassantMove(b5, c6));
+
+    CHECK(!pos.passant().has_value());
+    CHECK(pos.occupancy().normal() == BitBoard({d5, c6, e7, f7}));
+    CHECK(pos.occupancy(Player::WHITE) == BitBoard({d5, c6}));
+    CHECK(pos.occupancy(Player::BLACK) == BitBoard({e7, f7}));
+    CHECK(pos.attack(Player::WHITE) == BitBoard({b7, d7, c6, e6}));
+    CHECK(pos.attack(Player::BLACK) == BitBoard({d6, e6, f6, g6}));
+
+    pos = backup;
+
+    pos.makeMove(RegularMove(c7, c5), BLACK_PAWN); 
+
+    REQUIRE(pos.passant().has_value());
+    REQUIRE(pos.passant().value() == c5);
+
+    pos.makeMove(EnPassantMove(d5, c6));
+
+    CHECK(!pos.passant().has_value());
+    CHECK(pos.occupancy().normal() == BitBoard({b5, c6, e7, f7}));
+    CHECK(pos.occupancy(Player::WHITE) == BitBoard({b5, c6}));
+    CHECK(pos.occupancy(Player::BLACK) == BitBoard({e7, f7}));
+    CHECK(pos.attack(Player::WHITE) == BitBoard({b7, d7, a6, c6}));
+    CHECK(pos.attack(Player::BLACK) == BitBoard({d6, e6, f6, g6}));
+}

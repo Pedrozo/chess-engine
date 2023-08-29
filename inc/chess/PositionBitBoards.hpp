@@ -1,10 +1,13 @@
 #ifndef CHESS_POSITIONBITBOARDS_HPP
 #define CHESS_POSITIONBITBOARDS_HPP
 
+#include <optional>
+
 #include "chess/Piece.hpp"
 #include "chess/Player.hpp"
 #include "chess/RegularMove.hpp"
 #include "chess/CastlingMove.hpp"
+#include "chess/EnPassantMove.hpp"
 #include "chess/PlayerPiece.hpp"
 #include "chess/OccupancyBitBoard.hpp"
 #include "chess/Attack.hpp"
@@ -35,6 +38,10 @@ public:
         return previouslyMoved_;
     }
 
+    std::optional<Square> passant() const noexcept {
+        return passant_;
+    }
+
     bool isLegal(const CastlingMove& castlingMove) const noexcept;
 
     void makeMove(const RegularMove& regularMove, PlayerPiece movedPiece) {
@@ -52,6 +59,11 @@ public:
         updateAttack();
     }
 
+    void makeMove(const EnPassantMove& enPassantMove) {
+        makeMoveImpl(enPassantMove);
+        updateAttack();
+    }
+
 private:
     struct PlayerBitBoards {
         BitBoard pieces[6];
@@ -65,11 +77,14 @@ private:
 
     void makeMoveImpl(const CastlingMove& castlingMove);
 
+    void makeMoveImpl(const EnPassantMove& enPassantMove);
+
     void updateAttack();
 
     OccupancyBitBoard occupancy_;
     BitBoard previouslyMoved_;
     PlayerBitBoards players_[2];
+    std::optional<Square> passant_;
 };
 
 } // namespace chess
