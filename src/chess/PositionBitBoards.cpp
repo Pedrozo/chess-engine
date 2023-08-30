@@ -113,6 +113,26 @@ void PositionBitBoards::makeMoveImpl(const EnPassantMove& enPassantMove) {
     passant_ = std::nullopt;
 }
 
+void PositionBitBoards::makeMoveImpl(const PromotionMove& promotionMove) {
+    Player player = promotionMove.promotedPiece().player();
+    Piece promotedPiece = promotionMove.promotedPiece().piece();
+
+    makeMoveImpl(RegularMove(promotionMove.from(), promotionMove.to()), PlayerPiece(player, Piece::PAWN));
+
+    players_[player].pieces[promotedPiece] |= BitBoardSquare(promotionMove.to());
+    players_[player].pieces[Piece::PAWN] ^= BitBoardSquare(promotionMove.from());
+}
+
+void PositionBitBoards::makeMoveImpl(const PromotionMove& promotionMove, PlayerPiece capturedPiece) {
+    Player player = promotionMove.promotedPiece().player();
+    Piece promotedPiece = promotionMove.promotedPiece().piece();
+
+    makeMoveImpl(RegularMove(promotionMove.from(), promotionMove.to()), PlayerPiece(player, Piece::PAWN), capturedPiece);
+
+    players_[player].pieces[promotedPiece] |= BitBoardSquare(promotionMove.to());
+    players_[player].pieces[Piece::PAWN] ^= BitBoardSquare(promotionMove.from());
+}
+
 void PositionBitBoards::updateAttack() {
     players_[Player::WHITE].attack = chess::attack(Player::WHITE, occupancy_, players_[Player::WHITE].pieces);
     players_[Player::BLACK].attack = chess::attack(Player::BLACK, occupancy_, players_[Player::BLACK].pieces);

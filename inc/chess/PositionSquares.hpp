@@ -6,6 +6,7 @@
 #include "chess/RegularMove.hpp"
 #include "chess/CastlingMove.hpp"
 #include "chess/EnPassantMove.hpp"
+#include "chess/PromotionMove.hpp"
 
 #include <optional>
 
@@ -23,6 +24,8 @@ public:
 
     void makeMove(const EnPassantMove& enPassantMove);
 
+    void makeMove(const PromotionMove& promotionMove);
+
     void unmakeMove(const RegularMove& regularMove);
 
     void unmakeMove(const RegularMove& regularMove, PlayerPiece capturedPiece);
@@ -30,6 +33,8 @@ public:
     void unmakeMove(const CastlingMove& castlingMove);
 
     void unmakeMove(const EnPassantMove& enPassantMove);
+
+    void unmakeMove(const PromotionMove& promotionMove);
 
 private:
     std::optional<PlayerPiece> squares_[64];

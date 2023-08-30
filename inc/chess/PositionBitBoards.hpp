@@ -8,6 +8,7 @@
 #include "chess/RegularMove.hpp"
 #include "chess/CastlingMove.hpp"
 #include "chess/EnPassantMove.hpp"
+#include "chess/PromotionMove.hpp"
 #include "chess/PlayerPiece.hpp"
 #include "chess/OccupancyBitBoard.hpp"
 #include "chess/Attack.hpp"
@@ -64,6 +65,16 @@ public:
         updateAttack();
     }
 
+    void makeMove(const PromotionMove& promotionMove) {
+        makeMoveImpl(promotionMove);
+        updateAttack();
+    }
+
+    void makeMove(const PromotionMove& promotionMove, PlayerPiece capturedPiece) {
+        makeMoveImpl(promotionMove, capturedPiece);
+        updateAttack();
+    }
+
 private:
     struct PlayerBitBoards {
         BitBoard pieces[6];
@@ -78,6 +89,10 @@ private:
     void makeMoveImpl(const CastlingMove& castlingMove);
 
     void makeMoveImpl(const EnPassantMove& enPassantMove);
+
+    void makeMoveImpl(const PromotionMove& promotionMove);
+
+    void makeMoveImpl(const PromotionMove& promotionMove, PlayerPiece capturedPiece);
 
     void updateAttack();
 

@@ -22,6 +22,11 @@ void PositionSquares::makeMove(const EnPassantMove& enPassantMove) {
     squares_[enPassantMove.captured()] = std::nullopt;
 }
 
+void PositionSquares::makeMove(const PromotionMove& promotionMove) {
+    squares_[promotionMove.from()] = std::nullopt;
+    squares_[promotionMove.to()] = promotionMove.promotedPiece();
+}
+
 void PositionSquares::unmakeMove(const RegularMove& regularMove) {
     squares_[regularMove.from()] = squares_[regularMove.to()];
 }
@@ -42,6 +47,11 @@ void PositionSquares::unmakeMove(const EnPassantMove& enPassantMove) {
     squares_[enPassantMove.from()] = squares_[enPassantMove.to()];
     squares_[enPassantMove.to()] = std::nullopt;
     squares_[enPassantMove.captured()] = PlayerPiece(opponent(enPassantMove.player()), Piece::PAWN);
+}
+
+void PositionSquares::unmakeMove(const PromotionMove& promotionMove) {
+    squares_[promotionMove.from()] = PlayerPiece(promotionMove.promotedPiece().player(), Piece::PAWN);
+    squares_[promotionMove.to()] = std::nullopt;
 }
 
 } // namespace chess
