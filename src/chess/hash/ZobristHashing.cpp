@@ -1,9 +1,9 @@
 #include <array>
 #include <algorithm>
 #include <random>
-#include "chess/ZobristHashing.hpp"
+#include "chess/hash/ZobristHashing.hpp"
 
-namespace chess {
+namespace chess::hash {
 
 struct GeneratedHashValues {
 
@@ -26,4 +26,4 @@ void ZobristHashing::update(Square square, PlayerPiece playerPiece) {
     hash_ ^= generatedHash.hashValue[square][playerPiece];
 }
 
-} // namespace chess
+} // namespace chess::hash

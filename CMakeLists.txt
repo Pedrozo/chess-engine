@@ -6,7 +6,7 @@ add_library(chess-engine
             src/chess/BitBoardSquare.cpp
             src/chess/PositionBitBoards.cpp
             src/chess/PositionSquares.cpp
-            src/chess/ZobristHashing.cpp)
+            src/chess/hash/ZobristHashing.cpp)
 
 target_include_directories(chess-engine PUBLIC ./inc)
 set_target_properties(chess-engine PROPERTIES CXX_STANDARD 17)

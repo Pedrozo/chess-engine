@@ -12,7 +12,7 @@
 #include "chess/PlayerPiece.hpp"
 #include "chess/OccupancyBitBoard.hpp"
 #include "chess/Attack.hpp"
-#include "chess/ZobristHashing.hpp"
+#include "chess/hash/ZobristHashing.hpp"
 
 namespace chess {
 
@@ -77,7 +77,7 @@ private:
     BitBoard playerAttack_[2];
     BitBoard pieces_[12];
     std::optional<Square> passant_;
-    ZobristHashing hash_;
+    hash::ZobristHashing hash_;
 };
 
 } // namespace chess

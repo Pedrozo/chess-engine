@@ -5,7 +5,7 @@
 #include "chess/Square.hpp"
 #include "chess/PlayerPiece.hpp"
 
-namespace chess {
+namespace chess::hash {
 
 class ZobristHashing {
 public:
@@ -21,6 +21,6 @@ private:
     std::size_t hash_;
 };
 
-} // namespace chess
+} // namespace chess::hash
 
 #endif // CHESS_ZOBRISTHASHING_HPP
