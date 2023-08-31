@@ -3,12 +3,8 @@
 namespace chess {
 
 PositionBitBoards::PositionBitBoards(std::initializer_list<std::pair<Square, PlayerPiece>> pieces) {
-    for (const auto& squarePiece : pieces) {
-        BitBoardSquare bit(squarePiece.first);
-        occupancy_.set(squarePiece.first);
-        players_[squarePiece.second.player()].occupancy.set(squarePiece.first);
-        players_[squarePiece.second.player()].pieces[squarePiece.second.piece()].set(squarePiece.first);
-    }
+    for (const auto& squarePiece : pieces)
+        addPiece(squarePiece.first, squarePiece.second);
 
     updateAttack();
 }
@@ -37,105 +33,141 @@ bool PositionBitBoards::isLegal(const CastlingMove& castlingMove) const noexcept
     return (attack(opponent(castlingMove.player())) & (castlingMove.kingPathSquares() | kingBit)).isEmpty();
 }
 
-void PositionBitBoards::makeMoveImpl(const RegularMove& regularMove, PlayerPiece movedPiece) {
-    BitBoard fromBit = BitBoardSquare(regularMove.from());
-    BitBoard toBit = BitBoardSquare(regularMove.to());
-    BitBoard movedBits = fromBit | toBit;
+void PositionBitBoards::makeMove(const RegularMove& regularMove, PlayerPiece movedPiece) {
+    constexpr BitBoard passantRanks[2] = {
+        Rank::of(a2).bitboard() | Rank::of(a4).bitboard(),
+        Rank::of(a7).bitboard() | Rank::of(a5).bitboard()
+    };
 
-    occupancy_.reset(regularMove.from());
-    occupancy_.set(regularMove.to());
-
-    previouslyMoved_ |= movedBits;
-
-    players_[movedPiece.player()].occupancy ^= movedBits;
-    players_[movedPiece.player()].pieces[movedPiece.piece()] ^= movedBits;
+    movePiece(regularMove.from(), regularMove.to(), movedPiece);
+    updateAttack();
 
     if (movedPiece.piece() != Piece::PAWN) {
         passant_ = std::nullopt;
         return;
     }
 
-    constexpr BitBoard passantRanks[2] = {
-        Rank::of(a2).bitboard() | Rank::of(a4).bitboard(),
-        Rank::of(a7).bitboard() | Rank::of(a5).bitboard()
-    };
+    BitBoard moveBits = BitBoardSquare(regularMove.from()) | BitBoardSquare(regularMove.to());
 
-    if ((movedBits & passantRanks[movedPiece.player()]) == movedBits) {
+    if ((moveBits & passantRanks[movedPiece.player()]) == moveBits) {
         passant_ = std::make_optional(regularMove.to());
     } else {
         passant_ = std::nullopt;
     }
 }
 
-void PositionBitBoards::makeMoveImpl(const RegularMove& regularMove, PlayerPiece movedPiece, PlayerPiece capturedPiece) {
-    makeMoveImpl(regularMove, movedPiece);
-    players_[capturedPiece.player()].occupancy.reset(regularMove.to());
-    players_[capturedPiece.player()].pieces[capturedPiece.piece()].reset(regularMove.to());
-}
-
-void PositionBitBoards::makeMoveImpl(const CastlingMove& castlingMove) {
-    BitBoardSquare kingBit = castlingMove.kingSquare();
-    BitBoardSquare rookBit = castlingMove.rookSquare();
-    BitBoardSquare targetKingBit = castlingMove.targetKingSquare();
-    BitBoardSquare targetRookBit = castlingMove.targetRookSquare();
-
-    occupancy_.reset(castlingMove.kingSquare());
-    occupancy_.set(castlingMove.targetKingSquare());
-    occupancy_.reset(castlingMove.rookSquare());
-    occupancy_.set(castlingMove.targetRookSquare());
-
-    previouslyMoved_ |= (kingBit| rookBit | targetKingBit | targetRookBit);
-
-    players_[castlingMove.player()].occupancy ^= (kingBit | rookBit | targetKingBit | targetRookBit);
-    players_[castlingMove.player()].pieces[Piece::ROOK] ^= (rookBit | targetRookBit);
-    players_[castlingMove.player()].pieces[Piece::KING] ^= (kingBit | targetKingBit);
-
+void PositionBitBoards::makeMove(const RegularMove& regularMove, PlayerPiece movedPiece, PlayerPiece capturedPiece) {
+    removePiece(regularMove.to(), capturedPiece);
+    movePiece(regularMove.from(), regularMove.to(), movedPiece);
     passant_ = std::nullopt;
+    updateAttack();
 }
 
-void PositionBitBoards::makeMoveImpl(const EnPassantMove& enPassantMove) {
-    BitBoardSquare currentPawnBit(enPassantMove.from());
-    BitBoardSquare opponentPawnBit(enPassantMove.captured());
-    BitBoardSquare newPawnBit(enPassantMove.to());
-
-    occupancy_.set(enPassantMove.to());
-    occupancy_.reset(enPassantMove.captured());
-    occupancy_.reset(enPassantMove.from());
-
-    players_[enPassantMove.player()].occupancy ^= (currentPawnBit | newPawnBit);
-    players_[opponent(enPassantMove.player())].occupancy ^= opponentPawnBit;
-
-    previouslyMoved_ |= (currentPawnBit | opponentPawnBit | newPawnBit);
-
-    players_[enPassantMove.player()].pieces[Piece::PAWN] ^= (currentPawnBit | newPawnBit);
-    players_[opponent(enPassantMove.player())].pieces[Piece::PAWN] ^= opponentPawnBit;
-
+void PositionBitBoards::makeMove(const CastlingMove& castlingMove) {
+    movePiece(castlingMove.kingSquare(), castlingMove.targetKingSquare(), PlayerPiece(castlingMove.player(), Piece::KING));
+    movePiece(castlingMove.rookSquare(), castlingMove.targetRookSquare(), PlayerPiece(castlingMove.player(), Piece::ROOK));
     passant_ = std::nullopt;
+    updateAttack();
 }
 
-void PositionBitBoards::makeMoveImpl(const PromotionMove& promotionMove) {
-    Player player = promotionMove.promotedPiece().player();
-    Piece promotedPiece = promotionMove.promotedPiece().piece();
-
-    makeMoveImpl(RegularMove(promotionMove.from(), promotionMove.to()), PlayerPiece(player, Piece::PAWN));
-
-    players_[player].pieces[promotedPiece] |= BitBoardSquare(promotionMove.to());
-    players_[player].pieces[Piece::PAWN] ^= BitBoardSquare(promotionMove.from());
+void PositionBitBoards::makeMove(const EnPassantMove& enPassantMove) {
+    removePiece(enPassantMove.captured(), PlayerPiece(opponent(enPassantMove.player()), Piece::PAWN));
+    movePiece(enPassantMove.from(), enPassantMove.to(), PlayerPiece(enPassantMove.player(), Piece::PAWN));
+    passant_ = std::nullopt;
+    updateAttack();
 }
 
-void PositionBitBoards::makeMoveImpl(const PromotionMove& promotionMove, PlayerPiece capturedPiece) {
+void PositionBitBoards::makeMove(const PromotionMove& promotionMove) {
+    removePiece(promotionMove.from(), PlayerPiece(promotionMove.promotedPiece().player(), Piece::PAWN));
+    addPiece(promotionMove.to(), promotionMove.promotedPiece());
+    passant_ = std::nullopt;
+    updateAttack();
+}
+
+void PositionBitBoards::makeMove(const PromotionMove& promotionMove, PlayerPiece capturedPiece) {
     Player player = promotionMove.promotedPiece().player();
-    Piece promotedPiece = promotionMove.promotedPiece().piece();
-
-    makeMoveImpl(RegularMove(promotionMove.from(), promotionMove.to()), PlayerPiece(player, Piece::PAWN), capturedPiece);
-
-    players_[player].pieces[promotedPiece] |= BitBoardSquare(promotionMove.to());
-    players_[player].pieces[Piece::PAWN] ^= BitBoardSquare(promotionMove.from());
+    removePiece(promotionMove.from(), PlayerPiece(player, Piece::PAWN));
+    replacePiece(promotionMove.to(), capturedPiece, promotionMove.promotedPiece());
+    passant_ = std::nullopt;
+    updateAttack();
 }
 
 void PositionBitBoards::updateAttack() {
-    players_[Player::WHITE].attack = chess::attack(Player::WHITE, occupancy_, players_[Player::WHITE].pieces);
-    players_[Player::BLACK].attack = chess::attack(Player::BLACK, occupancy_, players_[Player::BLACK].pieces);
+    updateAttack(Player::WHITE);
+    updateAttack(Player::BLACK);
+}
+
+void PositionBitBoards::updateAttack(Player player) {
+    auto& atk = playerAttack_[player];
+
+    atk = BitBoard(0);
+
+    atk |= pawnsAttack(player, pieces_[PlayerPiece(player, Piece::PAWN)]);
+
+    for (BitBoardSquare rook : pieces_[PlayerPiece(player, Piece::ROOK)])
+        atk |= rookAttack(rook.square(), occupancy_.normal(), occupancy_.fileRotated());
+    
+    for (BitBoardSquare bishop : pieces_[PlayerPiece(player, Piece::BISHOP)])
+        atk |= bishopAttack(bishop.square(), occupancy_.diagonalRotated(), occupancy_.antiDiagonalRotated());
+
+    for (BitBoardSquare knight : pieces_[PlayerPiece(player, Piece::KNIGHT)])
+        atk |= knightAttack(knight.square());
+
+    for (BitBoardSquare queen : pieces_[PlayerPiece(player, Piece::QUEEN)])
+        atk |= queenAttack(queen.square(), occupancy_);
+
+    for (BitBoardSquare king : pieces_[PlayerPiece(player, Piece::KING)])
+        atk |= kingAttack(king.square());
+}
+
+void PositionBitBoards::addPiece(Square square, PlayerPiece piece) {
+    BitBoardSquare pieceBitBoard(square);
+
+    occupancy_.set(square);
+    pieces_[piece] ^= pieceBitBoard;
+    playerOccupancy_[piece.player()] ^= pieceBitBoard;
+
+    hash_.update(square, piece);
+}
+
+void PositionBitBoards::movePiece(Square fromSquare, Square toSquare, PlayerPiece piece) {
+    BitBoardSquare fromBitBoard(fromSquare);
+    BitBoardSquare toBitBoard(toSquare);
+    BitBoard moveBitBoard = fromBitBoard | toBitBoard;
+
+    occupancy_.reset(fromSquare);
+    occupancy_.set(toSquare);
+
+    pieces_[piece] ^= moveBitBoard;
+    playerOccupancy_[piece.player()] ^= moveBitBoard;
+    previouslyMoved_ |= moveBitBoard;
+
+    hash_.update(fromSquare, piece);
+    hash_.update(toSquare, piece);
+}
+
+void PositionBitBoards::removePiece(Square square, PlayerPiece piece) {
+    BitBoard pieceBitBoard = BitBoardSquare(square);
+
+    occupancy_.reset(square);
+    pieces_[piece] &= ~pieceBitBoard;
+    playerOccupancy_[piece.player()] &= ~pieceBitBoard;
+    previouslyMoved_ |= pieceBitBoard;
+
+    hash_.update(square, piece);
+}
+
+void PositionBitBoards::replacePiece(Square square, PlayerPiece previousPiece, PlayerPiece newPiece) {
+    BitBoard pieceBitBoard = BitBoardSquare(square);
+
+    pieces_[previousPiece] &= ~pieceBitBoard;
+    pieces_[newPiece] |= pieceBitBoard;
+    playerOccupancy_[previousPiece.player()] &= ~pieceBitBoard;
+    playerOccupancy_[newPiece.player()] |= pieceBitBoard;
+    previouslyMoved_ |= pieceBitBoard;
+
+    hash_.update(square, previousPiece);
+    hash_.update(square, newPiece);
 }
 
 } // namespace chess

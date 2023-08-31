@@ -24,30 +24,6 @@ BitBoard pawnsAttack(Player player, BitBoard pawns) noexcept;
 
 BitBoard queenAttack(Square s, const OccupancyBitBoard& occupancy) noexcept;
 
-template<typename PiecesMap>
-BitBoard attack(Player player, const OccupancyBitBoard& occupancy, const PiecesMap& pieces) noexcept {
-    BitBoard result(0);
-
-    result |= pawnsAttack(player, pieces[PAWN]);
-
-    for (BitBoardSquare rook : pieces[ROOK])
-        result |= rookAttack(rook.square(), occupancy.normal(), occupancy.fileRotated());
-
-    for (BitBoardSquare bishop : pieces[BISHOP])
-        result |= bishopAttack(bishop.square(), occupancy.diagonalRotated(), occupancy.antiDiagonalRotated());
-
-    for (BitBoardSquare knight : pieces[KNIGHT])
-        result |= knightAttack(knight.square());
-
-    for (BitBoardSquare queen : pieces[QUEEN])
-        result |= queenAttack(queen.square(), occupancy);
-
-    for (BitBoardSquare king : pieces[KING])
-        result |= kingAttack(king.square());
-
-    return result;
-}
-
 } // namespace chess
 
 #endif // CHESS_ATTACK_HPP

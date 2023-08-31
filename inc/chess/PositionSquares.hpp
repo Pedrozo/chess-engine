@@ -24,7 +24,7 @@ public:
 
     void makeMove(const EnPassantMove& enPassantMove);
 
-    void makeMove(const PromotionMove& promotionMove);
+    std::optional<PlayerPiece> makeMove(const PromotionMove& promotionMove);
 
     void unmakeMove(const RegularMove& regularMove);
 

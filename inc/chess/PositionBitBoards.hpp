@@ -12,6 +12,7 @@
 #include "chess/PlayerPiece.hpp"
 #include "chess/OccupancyBitBoard.hpp"
 #include "chess/Attack.hpp"
+#include "chess/ZobristHashing.hpp"
 
 namespace chess {
 
@@ -24,15 +25,15 @@ public:
     }
 
     BitBoard occupancy(Player player) const noexcept {
-        return players_[player].occupancy;
+        return playerOccupancy_[player];
     }
 
     BitBoard attack(Player player) const noexcept {
-        return players_[player].attack;
+        return playerAttack_[player];
     }
 
     BitBoard pieces(PlayerPiece playerPiece) const noexcept {
-        return players_[playerPiece.player()].pieces[playerPiece.piece()];
+        return pieces_[playerPiece];
     }
 
     BitBoard previouslyMoved() const noexcept {
@@ -45,61 +46,38 @@ public:
 
     bool isLegal(const CastlingMove& castlingMove) const noexcept;
 
-    void makeMove(const RegularMove& regularMove, PlayerPiece movedPiece) {
-        makeMoveImpl(regularMove, movedPiece);
-        updateAttack();
-    }
+    void makeMove(const RegularMove& regularMove, PlayerPiece movedPiece);
 
-    void makeMove(const RegularMove& regularMove, PlayerPiece movedPiece, PlayerPiece capturedPiece) {
-        makeMoveImpl(regularMove, movedPiece, capturedPiece);
-        updateAttack();
-    }
+    void makeMove(const RegularMove& regularMove, PlayerPiece movedPiece, PlayerPiece capturedPiece);
 
-    void makeMove(const CastlingMove& castlingMove) {
-        makeMoveImpl(castlingMove);
-        updateAttack();
-    }
+    void makeMove(const CastlingMove& castlingMove);
 
-    void makeMove(const EnPassantMove& enPassantMove) {
-        makeMoveImpl(enPassantMove);
-        updateAttack();
-    }
+    void makeMove(const EnPassantMove& enPassantMove);
 
-    void makeMove(const PromotionMove& promotionMove) {
-        makeMoveImpl(promotionMove);
-        updateAttack();
-    }
+    void makeMove(const PromotionMove& promotionMove);
 
-    void makeMove(const PromotionMove& promotionMove, PlayerPiece capturedPiece) {
-        makeMoveImpl(promotionMove, capturedPiece);
-        updateAttack();
-    }
+    void makeMove(const PromotionMove& promotionMove, PlayerPiece capturedPiece);
 
 private:
-    struct PlayerBitBoards {
-        BitBoard pieces[6];
-        BitBoard occupancy;
-        BitBoard attack;
-    };
-
-    void makeMoveImpl(const RegularMove& regularMove, PlayerPiece movedPiece);
-
-    void makeMoveImpl(const RegularMove& regularMove, PlayerPiece movedPiece, PlayerPiece capturedPiece);
-
-    void makeMoveImpl(const CastlingMove& castlingMove);
-
-    void makeMoveImpl(const EnPassantMove& enPassantMove);
-
-    void makeMoveImpl(const PromotionMove& promotionMove);
-
-    void makeMoveImpl(const PromotionMove& promotionMove, PlayerPiece capturedPiece);
-
     void updateAttack();
+
+    void updateAttack(Player player);
+
+    void addPiece(Square square, PlayerPiece piece);
+
+    void movePiece(Square fromSquare, Square toSquare, PlayerPiece piece);
+
+    void removePiece(Square square, PlayerPiece piece);
+
+    void replacePiece(Square square, PlayerPiece previousPiece, PlayerPiece newPiece);
 
     OccupancyBitBoard occupancy_;
     BitBoard previouslyMoved_;
-    PlayerBitBoards players_[2];
+    BitBoard playerOccupancy_[2];
+    BitBoard playerAttack_[2];
+    BitBoard pieces_[12];
     std::optional<Square> passant_;
+    ZobristHashing hash_;
 };
 
 } // namespace chess

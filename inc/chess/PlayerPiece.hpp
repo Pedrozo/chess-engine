@@ -19,6 +19,10 @@ public:
         return static_cast<Piece>(playerPiece_ >> 1);
     }
 
+    constexpr operator std::size_t() const noexcept {
+        return playerPiece_;
+    }
+
     friend constexpr bool operator==(PlayerPiece a, PlayerPiece b) {
         return a.playerPiece_ == b.playerPiece_;
     }

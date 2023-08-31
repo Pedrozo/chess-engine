@@ -22,9 +22,11 @@ void PositionSquares::makeMove(const EnPassantMove& enPassantMove) {
     squares_[enPassantMove.captured()] = std::nullopt;
 }
 
-void PositionSquares::makeMove(const PromotionMove& promotionMove) {
+std::optional<PlayerPiece> PositionSquares::makeMove(const PromotionMove& promotionMove) {
+    std::optional<PlayerPiece> captured = squares_[promotionMove.to()];
     squares_[promotionMove.from()] = std::nullopt;
     squares_[promotionMove.to()] = promotionMove.promotedPiece();
+    return captured;
 }
 
 void PositionSquares::unmakeMove(const RegularMove& regularMove) {
