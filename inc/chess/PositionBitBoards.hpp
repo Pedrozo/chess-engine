@@ -5,10 +5,10 @@
 
 #include "chess/Piece.hpp"
 #include "chess/Player.hpp"
-#include "chess/RegularMove.hpp"
-#include "chess/CastlingMove.hpp"
-#include "chess/EnPassantMove.hpp"
-#include "chess/PromotionMove.hpp"
+#include "chess/move/Regular.hpp"
+#include "chess/move/Castling.hpp"
+#include "chess/move/EnPassant.hpp"
+#include "chess/move/Promotion.hpp"
 #include "chess/PlayerPiece.hpp"
 #include "chess/OccupancyBitBoard.hpp"
 #include "chess/Attack.hpp"
@@ -44,19 +44,19 @@ public:
         return passant_;
     }
 
-    bool isLegal(const CastlingMove& castlingMove) const noexcept;
+    bool isLegal(const move::Castling& castlingMove) const noexcept;
 
-    void makeMove(const RegularMove& regularMove, PlayerPiece movedPiece);
+    void makeMove(const move::Regular& regularMove, PlayerPiece movedPiece);
 
-    void makeMove(const RegularMove& regularMove, PlayerPiece movedPiece, PlayerPiece capturedPiece);
+    void makeMove(const move::Regular& regularMove, PlayerPiece movedPiece, PlayerPiece capturedPiece);
 
-    void makeMove(const CastlingMove& castlingMove);
+    void makeMove(const move::Castling& castlingMove);
 
-    void makeMove(const EnPassantMove& enPassantMove);
+    void makeMove(const move::EnPassant& enPassantMove);
 
-    void makeMove(const PromotionMove& promotionMove);
+    void makeMove(const move::Promotion& promotionMove);
 
-    void makeMove(const PromotionMove& promotionMove, PlayerPiece capturedPiece);
+    void makeMove(const move::Promotion& promotionMove, PlayerPiece capturedPiece);
 
 private:
     void updateAttack();

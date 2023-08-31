@@ -9,7 +9,7 @@ PositionBitBoards::PositionBitBoards(std::initializer_list<std::pair<Square, Pla
     updateAttack();
 }
 
-bool PositionBitBoards::isLegal(const CastlingMove& castlingMove) const noexcept {
+bool PositionBitBoards::isLegal(const move::Castling& castlingMove) const noexcept {
     BitBoard unmoved = ~previouslyMoved_;
 
     BitBoardSquare kingBit = BitBoardSquare(castlingMove.kingSquare());
@@ -33,7 +33,7 @@ bool PositionBitBoards::isLegal(const CastlingMove& castlingMove) const noexcept
     return (attack(opponent(castlingMove.player())) & (castlingMove.kingPathSquares() | kingBit)).isEmpty();
 }
 
-void PositionBitBoards::makeMove(const RegularMove& regularMove, PlayerPiece movedPiece) {
+void PositionBitBoards::makeMove(const move::Regular& regularMove, PlayerPiece movedPiece) {
     constexpr BitBoard passantRanks[2] = {
         Rank::of(a2).bitboard() | Rank::of(a4).bitboard(),
         Rank::of(a7).bitboard() | Rank::of(a5).bitboard()
@@ -56,35 +56,35 @@ void PositionBitBoards::makeMove(const RegularMove& regularMove, PlayerPiece mov
     }
 }
 
-void PositionBitBoards::makeMove(const RegularMove& regularMove, PlayerPiece movedPiece, PlayerPiece capturedPiece) {
+void PositionBitBoards::makeMove(const move::Regular& regularMove, PlayerPiece movedPiece, PlayerPiece capturedPiece) {
     removePiece(regularMove.to(), capturedPiece);
     movePiece(regularMove.from(), regularMove.to(), movedPiece);
     passant_ = std::nullopt;
     updateAttack();
 }
 
-void PositionBitBoards::makeMove(const CastlingMove& castlingMove) {
+void PositionBitBoards::makeMove(const move::Castling& castlingMove) {
     movePiece(castlingMove.kingSquare(), castlingMove.targetKingSquare(), PlayerPiece(castlingMove.player(), Piece::KING));
     movePiece(castlingMove.rookSquare(), castlingMove.targetRookSquare(), PlayerPiece(castlingMove.player(), Piece::ROOK));
     passant_ = std::nullopt;
     updateAttack();
 }
 
-void PositionBitBoards::makeMove(const EnPassantMove& enPassantMove) {
+void PositionBitBoards::makeMove(const move::EnPassant& enPassantMove) {
     removePiece(enPassantMove.captured(), PlayerPiece(opponent(enPassantMove.player()), Piece::PAWN));
     movePiece(enPassantMove.from(), enPassantMove.to(), PlayerPiece(enPassantMove.player(), Piece::PAWN));
     passant_ = std::nullopt;
     updateAttack();
 }
 
-void PositionBitBoards::makeMove(const PromotionMove& promotionMove) {
+void PositionBitBoards::makeMove(const move::Promotion& promotionMove) {
     removePiece(promotionMove.from(), PlayerPiece(promotionMove.promotedPiece().player(), Piece::PAWN));
     addPiece(promotionMove.to(), promotionMove.promotedPiece());
     passant_ = std::nullopt;
     updateAttack();
 }
 
-void PositionBitBoards::makeMove(const PromotionMove& promotionMove, PlayerPiece capturedPiece) {
+void PositionBitBoards::makeMove(const move::Promotion& promotionMove, PlayerPiece capturedPiece) {
     Player player = promotionMove.promotedPiece().player();
     removePiece(promotionMove.from(), PlayerPiece(player, Piece::PAWN));
     replacePiece(promotionMove.to(), capturedPiece, promotionMove.promotedPiece());

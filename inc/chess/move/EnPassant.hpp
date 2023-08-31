@@ -1,14 +1,14 @@
-#ifndef CHESS_ENPASSANTMOVE_HPP
-#define CHESS_ENPASSANTMOVE_HPP
+#ifndef CHESS_MOVE_ENPASSANT_HPP
+#define CHESS_MOVE_ENPASSANT_HPP
 
 #include "chess/Square.hpp"
 #include "chess/Direction.hpp"
 
-namespace chess {
+namespace chess::move {
 
-class EnPassantMove {
+class EnPassant {
 public:
-    constexpr EnPassantMove(Square from, Square to)
+    constexpr EnPassant(Square from, Square to)
         : from_(from), to_(to), player_(from_.index() < to_.index() ? Player::WHITE : Player::BLACK) {}
 
     constexpr Player player() const noexcept {
@@ -33,6 +33,6 @@ private:
     Player player_;
 };
 
-} // namespace chess
+} // namespace chess::move
 
-#endif // CHESS_ENPASSANTMOVE_HPP
+#endif // CHESS_MOVE_ENPASSANT_HPP

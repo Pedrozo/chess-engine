@@ -1,16 +1,16 @@
-#ifndef CHESS_PROMOTIONMOVE_HPP
-#define CHESS_PROMOTIONMOVE_HPP
+#ifndef CHESS_MOVE_PROMOTION_HPP
+#define CHESS_MOVE_PROMOTION_HPP
 
 #include "chess/Square.hpp"
 #include "chess/Piece.hpp"
 #include "chess/PlayerPiece.hpp"
 #include "chess/Direction.hpp"
 
-namespace chess {
+namespace chess::move {
 
-class PromotionMove {
+class Promotion {
 public:
-    constexpr PromotionMove(Square from, Square to, PlayerPiece promotedPiece)
+    constexpr Promotion(Square from, Square to, PlayerPiece promotedPiece)
         : from_(from), to_(to), promotedPiece_(promotedPiece) {}
 
     constexpr Square from() const noexcept {
@@ -31,7 +31,6 @@ private:
     PlayerPiece promotedPiece_;
 };
 
-} // namespace chess
+} // namespace chess::move
 
-
-#endif // CHESS_PROMOTIONMOVE_HPP
+#endif // CHESS_MOVE_PROMOTION_HPP

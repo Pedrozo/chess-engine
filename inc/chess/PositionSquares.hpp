@@ -3,10 +3,10 @@
 
 #include "chess/Square.hpp"
 #include "chess/PlayerPiece.hpp"
-#include "chess/RegularMove.hpp"
-#include "chess/CastlingMove.hpp"
-#include "chess/EnPassantMove.hpp"
-#include "chess/PromotionMove.hpp"
+#include "chess/move/Regular.hpp"
+#include "chess/move/Castling.hpp"
+#include "chess/move/EnPassant.hpp"
+#include "chess/move/Promotion.hpp"
 
 #include <optional>
 
@@ -18,23 +18,23 @@ public:
         return squares_[square];
     }
 
-    std::optional<PlayerPiece> makeMove(const RegularMove& regularMove);
+    std::optional<PlayerPiece> makeMove(const move::Regular& regularMove);
 
-    void makeMove(const CastlingMove& castlingMove);
+    void makeMove(const move::Castling& castlingMove);
 
-    void makeMove(const EnPassantMove& enPassantMove);
+    void makeMove(const move::EnPassant& enPassantMove);
 
-    std::optional<PlayerPiece> makeMove(const PromotionMove& promotionMove);
+    std::optional<PlayerPiece> makeMove(const move::Promotion& promotionMove);
 
-    void unmakeMove(const RegularMove& regularMove);
+    void unmakeMove(const move::Regular& regularMove);
 
-    void unmakeMove(const RegularMove& regularMove, PlayerPiece capturedPiece);
+    void unmakeMove(const move::Regular& regularMove, PlayerPiece capturedPiece);
 
-    void unmakeMove(const CastlingMove& castlingMove);
+    void unmakeMove(const move::Castling& castlingMove);
 
-    void unmakeMove(const EnPassantMove& enPassantMove);
+    void unmakeMove(const move::EnPassant& enPassantMove);
 
-    void unmakeMove(const PromotionMove& promotionMove);
+    void unmakeMove(const move::Promotion& promotionMove);
 
 private:
     std::optional<PlayerPiece> squares_[64];

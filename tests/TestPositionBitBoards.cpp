@@ -111,7 +111,7 @@ TEST_CASE("queen capturing test") {
         0, 0, 1, 1, 1, 1, 0, 0
     }));
 
-    pos.makeMove(RegularMove(f1, c4), WHITE_BISHOP, BLACK_QUEEN);
+    pos.makeMove(move::Regular(f1, c4), WHITE_BISHOP, BLACK_QUEEN);
 
     expectedWhiteOccupancy ^= BitBoard({f1, c4});
     CHECK(pos.occupancy(Player::WHITE) == expectedWhiteOccupancy);
@@ -159,10 +159,10 @@ TEST_CASE("castling should be illegal when the kings haven't started at the corr
         {a8, BLACK_ROOK}
     });
 
-    CHECK(pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)) == false);
-    CHECK(pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)) == false);
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)) == false);
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)) == false);
+    CHECK(pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)) == false);
+    CHECK(pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)) == false);
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)) == false);
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)) == false);
 }
 
 TEST_CASE("castling should be illegal when the rooks haven't started at the correct positions") {
@@ -175,10 +175,10 @@ TEST_CASE("castling should be illegal when the rooks haven't started at the corr
         {a4, BLACK_ROOK}
     });
 
-    CHECK(pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)) == false);
-    CHECK(pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)) == false);
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)) == false);
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)) == false);
+    CHECK(pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)) == false);
+    CHECK(pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)) == false);
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)) == false);
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)) == false);
 }
 
 TEST_CASE("castling should be legal when the rooks and kings have started at the correct positions") {
@@ -191,10 +191,10 @@ TEST_CASE("castling should be legal when the rooks and kings have started at the
         {h8, BLACK_ROOK}
     });
 
-    CHECK(pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)));
 }
 
 TEST_CASE("castling should be illegal when the queen is on the path or when it's attacking the opponent's path") {
@@ -208,32 +208,32 @@ TEST_CASE("castling should be illegal when the queen is on the path or when it's
         {h8, BLACK_ROOK},
     });
 
-    CHECK(pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE))); // queen on the path
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE))); // queen attacks the path
+    CHECK(pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE))); // queen on the path
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE))); // queen attacks the path
 
-    pos.makeMove(RegularMove(d1, g4), WHITE_QUEEN);
+    pos.makeMove(move::Regular(d1, g4), WHITE_QUEEN);
 
-    CHECK(pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE))); // queen attack the path
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE))); // queen attack the path
+    CHECK(pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE))); // queen attack the path
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE))); // queen attack the path
 
-    pos.makeMove(RegularMove(g4, e4), WHITE_QUEEN);
+    pos.makeMove(move::Regular(g4, e4), WHITE_QUEEN);
 
-    CHECK(pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE))); // king is in check
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE))); // king is in check
+    CHECK(pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE))); // king is in check
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE))); // king is in check
 
-    pos.makeMove(RegularMove(e4, f4), WHITE_QUEEN);
-    pos.makeMove(RegularMove(f4, f1), WHITE_QUEEN);
+    pos.makeMove(move::Regular(e4, f4), WHITE_QUEEN);
+    pos.makeMove(move::Regular(f4, f1), WHITE_QUEEN);
 
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE))); // queen on the path
-    CHECK(pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE))); // queen attacks the path
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE))); // queen on the path
+    CHECK(pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE))); // queen attacks the path
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)));
 }
 
 TEST_CASE("castling should be iilegal when the rooks have moved") {
@@ -246,61 +246,61 @@ TEST_CASE("castling should be iilegal when the rooks have moved") {
         {h8, BLACK_ROOK},
     });
 
-    pos.makeMove(RegularMove(a1, a2), WHITE_ROOK);
+    pos.makeMove(move::Regular(a1, a2), WHITE_ROOK);
 
-    CHECK(pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)));
 
-    pos.makeMove(RegularMove(a2, a1), WHITE_ROOK);
+    pos.makeMove(move::Regular(a2, a1), WHITE_ROOK);
 
-    CHECK(pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)));
 
-    pos.makeMove(RegularMove(h1, h2), WHITE_ROOK);
+    pos.makeMove(move::Regular(h1, h2), WHITE_ROOK);
 
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)));
 
-    pos.makeMove(RegularMove(h2, h1), WHITE_ROOK);
+    pos.makeMove(move::Regular(h2, h1), WHITE_ROOK);
 
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)));
 
-    pos.makeMove(RegularMove(a8, a7), BLACK_ROOK);
+    pos.makeMove(move::Regular(a8, a7), BLACK_ROOK);
 
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)));
 
-    pos.makeMove(RegularMove(a7, a8), BLACK_ROOK);
+    pos.makeMove(move::Regular(a7, a8), BLACK_ROOK);
 
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)));
 
-    pos.makeMove(RegularMove(h8, h7), BLACK_ROOK);
+    pos.makeMove(move::Regular(h8, h7), BLACK_ROOK);
 
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)));
 
-    pos.makeMove(RegularMove(h7, h8), BLACK_ROOK);
+    pos.makeMove(move::Regular(h7, h8), BLACK_ROOK);
 
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)));
 }
 
 TEST_CASE("castling should be illegal when the king have moved") {
@@ -313,33 +313,33 @@ TEST_CASE("castling should be illegal when the king have moved") {
         {h8, BLACK_ROOK},
     });
 
-    pos.makeMove(RegularMove(e1, f1), WHITE_KING);
+    pos.makeMove(move::Regular(e1, f1), WHITE_KING);
 
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)));
 
-    pos.makeMove(RegularMove(f1, e1), WHITE_KING);
+    pos.makeMove(move::Regular(f1, e1), WHITE_KING);
 
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)));
-    CHECK(pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)));
+    CHECK(pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)));
 
-    pos.makeMove(RegularMove(e8, e7), BLACK_KING);
+    pos.makeMove(move::Regular(e8, e7), BLACK_KING);
 
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)));
 
-    pos.makeMove(RegularMove(e7, e8), BLACK_KING);
+    pos.makeMove(move::Regular(e7, e8), BLACK_KING);
 
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::WHITE, CastlingMove::Side::QUEEN_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::KING_SIDE)));
-    CHECK(!pos.isLegal(CastlingMove(Player::BLACK, CastlingMove::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::WHITE, move::Castling::Side::QUEEN_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::KING_SIDE)));
+    CHECK(!pos.isLegal(move::Castling(Player::BLACK, move::Castling::Side::QUEEN_SIDE)));
 }
 
 TEST_CASE("test castling") {
@@ -373,7 +373,7 @@ TEST_CASE("test castling") {
 
     PositionBitBoards backup = pos;
 
-    pos.makeMove(CastlingMove(Player::WHITE, CastlingMove::KING_SIDE));
+    pos.makeMove(move::Castling(Player::WHITE, move::Castling::KING_SIDE));
 
     CHECK(pos.occupancy().normal() == (BitBoard({g1, f1, a1, e8, a8, h8}) | whitePawns | blackPawns));
     CHECK(pos.occupancy(Player::WHITE) == (BitBoard({g1, f1, a1}) | whitePawns));
@@ -395,7 +395,7 @@ TEST_CASE("test castling") {
 
     pos = backup;
 
-    pos.makeMove(CastlingMove(Player::WHITE, CastlingMove::QUEEN_SIDE));
+    pos.makeMove(move::Castling(Player::WHITE, move::Castling::QUEEN_SIDE));
 
     CHECK(pos.occupancy().normal() == (BitBoard({c1, h1, d1, e8, a8, h8}) | whitePawns | blackPawns));
     CHECK(pos.occupancy(Player::WHITE) == (BitBoard({c1, h1, d1}) | whitePawns));
@@ -417,7 +417,7 @@ TEST_CASE("test castling") {
 
     backup = pos;
 
-    pos.makeMove(CastlingMove(Player::BLACK, CastlingMove::KING_SIDE));
+    pos.makeMove(move::Castling(Player::BLACK, move::Castling::KING_SIDE));
 
     CHECK(pos.occupancy().normal() == (BitBoard({c1, h1, d1, g8, a8, f8}) | whitePawns | blackPawns));
     CHECK(pos.occupancy(Player::WHITE) == (BitBoard({c1, h1, d1}) | whitePawns));
@@ -439,7 +439,7 @@ TEST_CASE("test castling") {
 
     pos = backup;
 
-    pos.makeMove(CastlingMove(Player::BLACK, CastlingMove::QUEEN_SIDE));
+    pos.makeMove(move::Castling(Player::BLACK, move::Castling::QUEEN_SIDE));
 
     CHECK(pos.occupancy().normal() == (BitBoard({c1, h1, d1, c8, d8, h8}) | whitePawns | blackPawns));
     CHECK(pos.occupancy(Player::WHITE) == (BitBoard({c1, h1, d1}) | whitePawns));
@@ -473,14 +473,14 @@ TEST_CASE("en passant triggering cases") {
         {g7, BLACK_PAWN},
     });
 
-    pos.makeMove(RegularMove(a7, a5), BLACK_PAWN);
+    pos.makeMove(move::Regular(a7, a5), BLACK_PAWN);
 
     PositionBitBoards backup = pos;
 
     REQUIRE(pos.passant().has_value());
     CHECK(pos.passant().value() == a5);
 
-    pos.makeMove(RegularMove(e4, e5), WHITE_PAWN);
+    pos.makeMove(move::Regular(e4, e5), WHITE_PAWN);
 
     CHECK(!pos.passant().has_value());
 
@@ -489,7 +489,7 @@ TEST_CASE("en passant triggering cases") {
     REQUIRE(pos.passant().has_value());
     CHECK(pos.passant().value() == a5);
 
-    pos.makeMove(CastlingMove(Player::WHITE, CastlingMove::KING_SIDE));
+    pos.makeMove(move::Castling(Player::WHITE, move::Castling::KING_SIDE));
 
     CHECK(!pos.passant().has_value());
 }
@@ -505,12 +505,12 @@ TEST_CASE("en passant captures") {
 
     PositionBitBoards backup = pos;
 
-    pos.makeMove(RegularMove(c7, c5), BLACK_PAWN); 
+    pos.makeMove(move::Regular(c7, c5), BLACK_PAWN); 
 
     REQUIRE(pos.passant().has_value());
     REQUIRE(pos.passant().value() == c5);
 
-    pos.makeMove(EnPassantMove(b5, c6));
+    pos.makeMove(move::EnPassant(b5, c6));
 
     CHECK(!pos.passant().has_value());
     CHECK(pos.occupancy().normal() == BitBoard({d5, c6, e7, f7}));
@@ -521,12 +521,12 @@ TEST_CASE("en passant captures") {
 
     pos = backup;
 
-    pos.makeMove(RegularMove(c7, c5), BLACK_PAWN); 
+    pos.makeMove(move::Regular(c7, c5), BLACK_PAWN); 
 
     REQUIRE(pos.passant().has_value());
     REQUIRE(pos.passant().value() == c5);
 
-    pos.makeMove(EnPassantMove(d5, c6));
+    pos.makeMove(move::EnPassant(d5, c6));
 
     CHECK(!pos.passant().has_value());
     CHECK(pos.occupancy().normal() == BitBoard({b5, c6, e7, f7}));

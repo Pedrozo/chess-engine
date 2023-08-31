@@ -1,20 +1,20 @@
-#ifndef CHESS_CASTLINGMOVE_HPP
-#define CHESS_CASTLINGMOVE_HPP
+#ifndef CHESS_MOVE_CASTLING_HPP
+#define CHESS_MOVE_CASTLING_HPP
 
 #include "chess/Player.hpp"
 #include "chess/Square.hpp"
 #include "chess/BitBoard.hpp"
 
-namespace chess {
+namespace chess::move {
 
-class CastlingMove {
+class Castling {
 public:
     enum Side {
         KING_SIDE,
         QUEEN_SIDE
     };
 
-    constexpr CastlingMove(Player player, Side side)
+    constexpr Castling(Player player, Side side)
         : player_(player), side_(side) {}
 
     constexpr Player player() const noexcept {
@@ -102,6 +102,6 @@ private:
     Side side_;
 };
 
-} // namespace chess
+} // namespace chess::move
 
-#endif // CHESS_CASTLINGMOVE_HPP
+#endif // CHESS_MOVE_CASTLING_HPP
