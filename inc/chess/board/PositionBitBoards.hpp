@@ -1,5 +1,5 @@
-#ifndef CHESS_POSITIONBITBOARDS_HPP
-#define CHESS_POSITIONBITBOARDS_HPP
+#ifndef CHESS_BOARD_POSITIONBITBOARDS_HPP
+#define CHESS_BOARD_POSITIONBITBOARDS_HPP
 
 #include <optional>
 
@@ -14,7 +14,7 @@
 #include "chess/Attack.hpp"
 #include "chess/hash/ZobristHashing.hpp"
 
-namespace chess {
+namespace chess::board {
 
 class PositionBitBoards {
 public:
@@ -80,6 +80,6 @@ private:
     hash::ZobristHashing hash_;
 };
 
-} // namespace chess
+} // namespace chess::board
 
-#endif // CHESS_POSITIONBITBOARDS_HPP
+#endif // CHESS_BOARD_POSITIONBITBOARDS_HPP

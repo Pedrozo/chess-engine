@@ -1,6 +1,6 @@
-#include "chess/PositionBitBoards.hpp"
+#include "chess/board/PositionBitBoards.hpp"
 
-namespace chess {
+namespace chess::board {
 
 PositionBitBoards::PositionBitBoards(std::initializer_list<std::pair<Square, PlayerPiece>> pieces) {
     for (const auto& squarePiece : pieces)
@@ -170,4 +170,4 @@ void PositionBitBoards::replacePiece(Square square, PlayerPiece previousPiece, P
     hash_.update(square, newPiece);
 }
 
-} // namespace chess
+} // namespace chess::board

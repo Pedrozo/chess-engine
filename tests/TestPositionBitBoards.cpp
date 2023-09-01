@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include "doctest.h"
-#include "chess/PositionBitBoards.hpp"
+#include "chess/board/PositionBitBoards.hpp"
 #include "chess/util/Log.hpp"
 
 using namespace chess;
@@ -25,7 +25,7 @@ chess::BitBoard makeBitBoard(const std::vector<int>& bits) {
 
 TEST_CASE("queen capturing test") {
 
-    PositionBitBoards pos({
+    board::PositionBitBoards pos({
         {b1, WHITE_KING},
         {d1, BLACK_KING},
         {f1, WHITE_BISHOP},
@@ -150,7 +150,7 @@ TEST_CASE("queen capturing test") {
 }
 
 TEST_CASE("castling should be illegal when the kings haven't started at the correct positions") {
-    PositionBitBoards pos({
+    board::PositionBitBoards pos({
         {e2, WHITE_KING},
         {h1, WHITE_ROOK},
         {a1, WHITE_ROOK},
@@ -166,7 +166,7 @@ TEST_CASE("castling should be illegal when the kings haven't started at the corr
 }
 
 TEST_CASE("castling should be illegal when the rooks haven't started at the correct positions") {
-    PositionBitBoards pos({
+    board::PositionBitBoards pos({
         {e1, WHITE_KING},
         {h2, WHITE_ROOK},
         {c7, WHITE_ROOK},
@@ -182,7 +182,7 @@ TEST_CASE("castling should be illegal when the rooks haven't started at the corr
 }
 
 TEST_CASE("castling should be legal when the rooks and kings have started at the correct positions") {
-    PositionBitBoards pos({
+    board::PositionBitBoards pos({
         {e1, WHITE_KING},
         {a1, WHITE_ROOK},
         {h1, WHITE_ROOK},
@@ -198,7 +198,7 @@ TEST_CASE("castling should be legal when the rooks and kings have started at the
 }
 
 TEST_CASE("castling should be illegal when the queen is on the path or when it's attacking the opponent's path") {
-    PositionBitBoards pos({
+    board::PositionBitBoards pos({
         {e1, WHITE_KING},
         {a1, WHITE_ROOK},
         {h1, WHITE_ROOK},
@@ -237,7 +237,7 @@ TEST_CASE("castling should be illegal when the queen is on the path or when it's
 }
 
 TEST_CASE("castling should be iilegal when the rooks have moved") {
-    PositionBitBoards pos({
+    board::PositionBitBoards pos({
         {e1, WHITE_KING},
         {a1, WHITE_ROOK},
         {h1, WHITE_ROOK},
@@ -304,7 +304,7 @@ TEST_CASE("castling should be iilegal when the rooks have moved") {
 }
 
 TEST_CASE("castling should be illegal when the king have moved") {
-    PositionBitBoards pos({
+    board::PositionBitBoards pos({
         {e1, WHITE_KING},
         {a1, WHITE_ROOK},
         {h1, WHITE_ROOK},
@@ -343,7 +343,7 @@ TEST_CASE("castling should be illegal when the king have moved") {
 }
 
 TEST_CASE("test castling") {
-    PositionBitBoards pos({
+    board::PositionBitBoards pos({
         {e1, WHITE_KING},
         {a1, WHITE_ROOK},
         {h1, WHITE_ROOK},
@@ -371,7 +371,7 @@ TEST_CASE("test castling") {
     constexpr BitBoard whitePawns = Rank::of(a2).bitboard();
     constexpr BitBoard blackPawns = Rank::of(a7).bitboard();
 
-    PositionBitBoards backup = pos;
+    board::PositionBitBoards backup = pos;
 
     pos.makeMove(move::Castling(Player::WHITE, move::Castling::KING_SIDE));
 
@@ -461,7 +461,7 @@ TEST_CASE("test castling") {
 }
 
 TEST_CASE("en passant triggering cases") {
-    PositionBitBoards pos({
+    board::PositionBitBoards pos({
         {e1, WHITE_KING},
         {e4, WHITE_PAWN},
         {h4, WHITE_PAWN},
@@ -475,7 +475,7 @@ TEST_CASE("en passant triggering cases") {
 
     pos.makeMove(move::Regular(a7, a5), BLACK_PAWN);
 
-    PositionBitBoards backup = pos;
+    board::PositionBitBoards backup = pos;
 
     REQUIRE(pos.passant().has_value());
     CHECK(pos.passant().value() == a5);
@@ -495,7 +495,7 @@ TEST_CASE("en passant triggering cases") {
 }
 
 TEST_CASE("en passant captures") {
-    PositionBitBoards pos({
+    board::PositionBitBoards pos({
         {b5, WHITE_PAWN},
         {d5, WHITE_PAWN},
         {c7, BLACK_PAWN},
@@ -503,7 +503,7 @@ TEST_CASE("en passant captures") {
         {f7, BLACK_PAWN},
     });
 
-    PositionBitBoards backup = pos;
+    board::PositionBitBoards backup = pos;
 
     pos.makeMove(move::Regular(c7, c5), BLACK_PAWN); 
 

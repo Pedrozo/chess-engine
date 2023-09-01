@@ -1,5 +1,5 @@
-#ifndef CHESS_POSITIONSQUARES_HPP
-#define CHESS_POSITIONSQUARES_HPP
+#ifndef CHESS_BOARD_POSITIONSQUARES_HPP
+#define CHESS_BOARD_POSITIONSQUARES_HPP
 
 #include "chess/Square.hpp"
 #include "chess/PlayerPiece.hpp"
@@ -10,7 +10,7 @@
 
 #include <optional>
 
-namespace chess {
+namespace chess::board {
 
 class PositionSquares {
 public:
@@ -42,6 +42,6 @@ private:
     std::optional<PlayerPiece> squares_[64];
 };
 
-} // namespace chess
+} // namespace chess::board
 
-#endif // CHESS_POSITIONSQUARES_HPP
+#endif // CHESS_BOARD_POSITIONSQUARES_HPP
