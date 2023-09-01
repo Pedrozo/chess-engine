@@ -14,6 +14,8 @@ namespace chess {
 
 class PositionSquares {
 public:
+    explicit PositionSquares(std::initializer_list<std::pair<Square, PlayerPiece>> pieces);
+
     std::optional<PlayerPiece> at(Square square) const {
         return squares_[square];
     }
