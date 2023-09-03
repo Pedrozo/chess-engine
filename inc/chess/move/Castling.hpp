@@ -9,6 +9,8 @@ namespace chess::move {
 
 class Castling {
 public:
+    static constexpr bool mayCapture = false;
+
     enum Side {
         KING_SIDE,
         QUEEN_SIDE
