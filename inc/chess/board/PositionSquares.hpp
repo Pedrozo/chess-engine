@@ -38,6 +38,8 @@ public:
 
     void unmakeMove(const move::Promotion& promotionMove);
 
+    void unmakeMove(const move::Promotion& promotionMove, PlayerPiece capturedPiece);
+
 private:
     std::optional<PlayerPiece> squares_[64];
 };

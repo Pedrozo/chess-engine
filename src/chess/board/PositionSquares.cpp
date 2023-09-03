@@ -61,4 +61,9 @@ void PositionSquares::unmakeMove(const move::Promotion& promotionMove) {
     squares_[promotionMove.to()] = std::nullopt;
 }
 
+void PositionSquares::unmakeMove(const move::Promotion& promotionMove, PlayerPiece capturedPiece) {
+    squares_[promotionMove.from()] = PlayerPiece(promotionMove.promotedPiece().player(), Piece::PAWN);
+    squares_[promotionMove.to()] = capturedPiece;
+}
+
 } // namespace chess::board
