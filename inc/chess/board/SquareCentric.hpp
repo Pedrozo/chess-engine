@@ -8,6 +8,7 @@
 #include "chess/move/EnPassant.hpp"
 #include "chess/move/Promotion.hpp"
 #include "chess/move/Backward.hpp"
+#include "chess/board/Visitor.hpp"
 
 #include <optional>
 
@@ -36,6 +37,10 @@ public:
     void unmakeMove(const move::Backward<move::EnPassant>& enPassantMove);
 
     void unmakeMove(const move::Backward<move::Promotion>& promotionMove);
+
+    Visitor<SquareCentric> visitor() noexcept {
+        return Visitor<SquareCentric>(*this);
+    }
 
 private:
     std::optional<PlayerPiece> squares_[64];
