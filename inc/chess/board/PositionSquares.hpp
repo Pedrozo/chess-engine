@@ -7,6 +7,7 @@
 #include "chess/move/Castling.hpp"
 #include "chess/move/EnPassant.hpp"
 #include "chess/move/Promotion.hpp"
+#include "chess/move/Backward.hpp"
 
 #include <optional>
 
@@ -28,17 +29,13 @@ public:
 
     std::optional<PlayerPiece> makeMove(const move::Promotion& promotionMove);
 
-    void unmakeMove(const move::Regular& regularMove);
+    void unmakeMove(const move::Backward<move::Regular>& backwardRegularMove);
 
-    void unmakeMove(const move::Regular& regularMove, PlayerPiece capturedPiece);
+    void unmakeMove(const move::Backward<move::Castling>& backwardRegularMove);
 
-    void unmakeMove(const move::Castling& castlingMove);
+    void unmakeMove(const move::Backward<move::EnPassant>& enPassantMove);
 
-    void unmakeMove(const move::EnPassant& enPassantMove);
-
-    void unmakeMove(const move::Promotion& promotionMove);
-
-    void unmakeMove(const move::Promotion& promotionMove, PlayerPiece capturedPiece);
+    void unmakeMove(const move::Backward<move::Promotion>& promotionMove);
 
 private:
     std::optional<PlayerPiece> squares_[64];

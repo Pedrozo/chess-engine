@@ -34,36 +34,27 @@ std::optional<PlayerPiece> PositionSquares::makeMove(const move::Promotion& prom
     return captured;
 }
 
-void PositionSquares::unmakeMove(const move::Regular& regularMove) {
-    squares_[regularMove.from()] = squares_[regularMove.to()];
+void PositionSquares::unmakeMove(const move::Backward<move::Regular>& backwardRegularMove) {
+    squares_[backwardRegularMove.move().from()] = squares_[backwardRegularMove.move().to()];
+    squares_[backwardRegularMove.move().to()] = backwardRegularMove.captured();
 }
 
-void PositionSquares::unmakeMove(const move::Regular& regularMove, PlayerPiece capturedPiece) {    
-    unmakeMove(regularMove);
-    squares_[regularMove.to()] = capturedPiece;
+void PositionSquares::unmakeMove(const move::Backward<move::Castling>& backwardCastlingMove) {
+    squares_[backwardCastlingMove.move().kingSquare()] = PlayerPiece(backwardCastlingMove.move().player(), Piece::KING);
+    squares_[backwardCastlingMove.move().rookSquare()] = PlayerPiece(backwardCastlingMove.move().player(), Piece::ROOK);
+    squares_[backwardCastlingMove.move().targetKingSquare()] = std::nullopt;
+    squares_[backwardCastlingMove.move().targetRookSquare()] = std::nullopt;
 }
 
-void PositionSquares::unmakeMove(const move::Castling& castlingMove) {
-    squares_[castlingMove.kingSquare()] = PlayerPiece(castlingMove.player(), Piece::KING);
-    squares_[castlingMove.rookSquare()] = PlayerPiece(castlingMove.player(), Piece::ROOK);
-    squares_[castlingMove.targetKingSquare()] = std::nullopt;
-    squares_[castlingMove.targetRookSquare()] = std::nullopt;
+void PositionSquares::unmakeMove(const move::Backward<move::EnPassant>& backwardEnPassantMove) {
+    squares_[backwardEnPassantMove.move().from()] = squares_[backwardEnPassantMove.move().to()];
+    squares_[backwardEnPassantMove.move().to()] = std::nullopt;
+    squares_[backwardEnPassantMove.move().captured()] = PlayerPiece(opponent(backwardEnPassantMove.move().player()), Piece::PAWN);
 }
 
-void PositionSquares::unmakeMove(const move::EnPassant& enPassantMove) {
-    squares_[enPassantMove.from()] = squares_[enPassantMove.to()];
-    squares_[enPassantMove.to()] = std::nullopt;
-    squares_[enPassantMove.captured()] = PlayerPiece(opponent(enPassantMove.player()), Piece::PAWN);
-}
-
-void PositionSquares::unmakeMove(const move::Promotion& promotionMove) {
-    squares_[promotionMove.from()] = PlayerPiece(promotionMove.promotedPiece().player(), Piece::PAWN);
-    squares_[promotionMove.to()] = std::nullopt;
-}
-
-void PositionSquares::unmakeMove(const move::Promotion& promotionMove, PlayerPiece capturedPiece) {
-    squares_[promotionMove.from()] = PlayerPiece(promotionMove.promotedPiece().player(), Piece::PAWN);
-    squares_[promotionMove.to()] = capturedPiece;
+void PositionSquares::unmakeMove(const move::Backward<move::Promotion>& backwardPromotionMove) {
+    squares_[backwardPromotionMove.move().from()] = PlayerPiece(backwardPromotionMove.move().promotedPiece().player(), Piece::PAWN);
+    squares_[backwardPromotionMove.move().to()] = backwardPromotionMove.captured();
 }
 
 } // namespace chess::board
