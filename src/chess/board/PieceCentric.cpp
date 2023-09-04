@@ -1,5 +1,7 @@
 #include "chess/board/PieceCentric.hpp"
 
+#include <algorithm>
+
 namespace chess::board {
 
 PieceCentric::PieceCentric(std::initializer_list<std::pair<Square, PlayerPiece>> pieces) {
@@ -168,6 +170,33 @@ void PieceCentric::replacePiece(Square square, PlayerPiece previousPiece, Player
 
     hash_.update(square, previousPiece);
     hash_.update(square, newPiece);
+}
+
+bool operator==(const PieceCentric& board1, const PieceCentric& board2) {
+    if (board1.hash_.get() != board2.hash_.get())
+        return false;
+
+    if (board1.pieces_ != board2.pieces_)
+        return false;
+
+    constexpr std::array<move::Castling, 4> castlingMoves = {
+        move::Castling(Player::WHITE, move::Castling::KING_SIDE),
+        move::Castling(Player::WHITE, move::Castling::QUEEN_SIDE),
+        move::Castling(Player::BLACK, move::Castling::KING_SIDE),
+        move::Castling(Player::BLACK, move::Castling::QUEEN_SIDE)
+    };
+
+    auto boardsHaveDiffCastlingRights = [&board1, &board2] (const move::Castling& castlingMove) {
+        return board1.isLegal(castlingMove) != board2.isLegal(castlingMove);
+    };
+
+    if (std::any_of(castlingMoves.begin(), castlingMoves.end(), boardsHaveDiffCastlingRights))
+        return false;
+
+    if (board1.passant_ != board2.passant_)
+        return false;
+
+    return true;
 }
 
 } // namespace chess::board

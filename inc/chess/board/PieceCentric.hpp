@@ -1,6 +1,7 @@
 #ifndef CHESS_BOARD_PIECECENTRIC_HPP
 #define CHESS_BOARD_PIECECENTRIC_HPP
 
+#include <array>
 #include <optional>
 
 #include "chess/Piece.hpp"
@@ -58,6 +59,8 @@ public:
 
     void makeMove(const move::Promotion& promotionMove, PlayerPiece capturedPiece);
 
+    friend bool operator==(const PieceCentric&, const PieceCentric&);
+
 private:
     void updateAttack();
 
@@ -73,9 +76,9 @@ private:
 
     OccupancyBitBoard occupancy_;
     BitBoard previouslyMoved_;
-    BitBoard playerOccupancy_[2];
-    BitBoard playerAttack_[2];
-    BitBoard pieces_[12];
+    std::array<BitBoard, 2> playerOccupancy_;
+    std::array<BitBoard, 2> playerAttack_;
+    std::array<BitBoard, 12> pieces_;
     std::optional<Square> passant_;
     hash::ZobristHashing hash_;
 };
