@@ -1,5 +1,5 @@
-#ifndef CHESS_BOARD_POSITIONSQUARES_HPP
-#define CHESS_BOARD_POSITIONSQUARES_HPP
+#ifndef CHESS_BOARD_SQUARECENTRIC_HPP
+#define CHESS_BOARD_SQUARECENTRIC_HPP
 
 #include "chess/Square.hpp"
 #include "chess/PlayerPiece.hpp"
@@ -13,9 +13,9 @@
 
 namespace chess::board {
 
-class PositionSquares {
+class SquareCentric {
 public:
-    explicit PositionSquares(std::initializer_list<std::pair<Square, PlayerPiece>> pieces);
+    explicit SquareCentric(std::initializer_list<std::pair<Square, PlayerPiece>> pieces);
 
     std::optional<PlayerPiece> at(Square square) const {
         return squares_[square];
@@ -43,4 +43,4 @@ private:
 
 } // namespace chess::board
 
-#endif // CHESS_BOARD_POSITIONSQUARES_HPP
+#endif // CHESS_BOARD_SQUARECENTRIC_HPP

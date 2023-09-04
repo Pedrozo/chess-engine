@@ -1,5 +1,5 @@
-#ifndef CHESS_BOARD_POSITIONBITBOARDS_HPP
-#define CHESS_BOARD_POSITIONBITBOARDS_HPP
+#ifndef CHESS_BOARD_PIECECENTRIC_HPP
+#define CHESS_BOARD_PIECECENTRIC_HPP
 
 #include <optional>
 
@@ -16,9 +16,9 @@
 
 namespace chess::board {
 
-class PositionBitBoards {
+class PieceCentric {
 public:
-    explicit PositionBitBoards(std::initializer_list<std::pair<Square, PlayerPiece>> pieces);
+    explicit PieceCentric(std::initializer_list<std::pair<Square, PlayerPiece>> pieces);
 
     const OccupancyBitBoard& occupancy() const noexcept {
         return occupancy_;
@@ -82,4 +82,4 @@ private:
 
 } // namespace chess::board
 
-#endif // CHESS_BOARD_POSITIONBITBOARDS_HPP
+#endif // CHESS_BOARD_PIECECENTRIC_HPP

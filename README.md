@@ -7,6 +7,6 @@ A considerable amount of code is header-only. This is to allow more compiler opt
 ## Board Representation
 The board representation classes are in the `chess::board` namespace.
 ### Piece centric
-The `chess::board::PositionBitBoards` is the piece centric representation. It contains bitboards for representing the pieces, attack, rotated occupancy, position hashing, etc.
+The `chess::board::PieceCentric` is the piece centric representation. It contains bitboards for representing the pieces, attack, rotated occupancy, position hashing, etc.
 ### Square centric
-A square centric representation is also important to constaint-time check board squares, and the `chess::board::PositionSquares` class serves such purpose. It contains the usual 64 length array storing which piece is at each board square.
+A square centric representation is also important to constaint-time check board squares, and the `chess::board::SquareCentric` class serves such purpose. It contains the usual 64 length array storing which piece is at each board square.
