@@ -6,6 +6,7 @@ add_library(chess-engine
             src/chess/BitBoardSquare.cpp
             src/chess/board/PieceCentric.cpp
             src/chess/board/SquareCentric.cpp
+            src/chess/search/Position.cpp
             src/chess/hash/ZobristHashing.cpp)
 
 target_include_directories(chess-engine PUBLIC ./inc)
