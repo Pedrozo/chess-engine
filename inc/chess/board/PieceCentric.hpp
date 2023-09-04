@@ -61,6 +61,10 @@ public:
 
     friend bool operator==(const PieceCentric&, const PieceCentric&);
 
+    friend bool operator!=(const PieceCentric& board1, const PieceCentric& board2) {
+        return !(board1 == board2);
+    }
+
 private:
     void updateAttack();
 
