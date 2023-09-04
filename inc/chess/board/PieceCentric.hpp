@@ -3,6 +3,7 @@
 
 #include <array>
 #include <optional>
+#include <functional>
 
 #include "chess/Piece.hpp"
 #include "chess/Player.hpp"
@@ -65,6 +66,8 @@ public:
         return !(board1 == board2);
     }
 
+    friend struct std::hash<PieceCentric>;
+
 private:
     void updateAttack();
 
@@ -88,5 +91,16 @@ private:
 };
 
 } // namespace chess::board
+
+namespace std {
+
+template<>
+struct hash<chess::board::PieceCentric> {
+    std::size_t operator()(const chess::board::PieceCentric& board) const {
+        return board.hash_.get();
+    }
+};
+
+} // namespace std
 
 #endif // CHESS_BOARD_PIECECENTRIC_HPP
