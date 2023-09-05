@@ -1,9 +1,9 @@
 include(CTest)
 
-add_executable(TestPositionBitBoards TestPositionBitBoards.cpp)
+add_executable(TestRegularMoves TestRegularMoves.cpp)
 
-target_include_directories(TestPositionBitBoards PUBLIC doctest)
-target_link_libraries(TestPositionBitBoards PUBLIC chess-engine)
-set_target_properties(TestPositionBitBoards PROPERTIES CXX_STANDARD 17)
+target_include_directories(TestRegularMoves PUBLIC doctest)
+target_link_libraries(TestRegularMoves PUBLIC chess-engine)
+set_target_properties(TestRegularMoves PROPERTIES CXX_STANDARD 17)
 
-add_test(TestPositionBitBoards TestPositionBitBoards)
+add_test(TestRegularMoves TestRegularMoves)
