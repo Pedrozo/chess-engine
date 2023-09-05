@@ -14,6 +14,11 @@ class OccupancyBitBoard {
 public:
     OccupancyBitBoard() : normal_(0UL), fileRotated_(), diagonalRotated_(), antidiagonalRotated_() {}
 
+    explicit OccupancyBitBoard(std::initializer_list<Square> squares) : OccupancyBitBoard() {
+        for (Square s : squares)
+            set(s);
+    }
+
     BitBoard normal() const noexcept {
         return normal_;
     }

@@ -8,6 +8,9 @@ namespace chess::move {
 
 class EnPassant {
 public:
+    // en passant is always a capture, thus it doesn't requires special treatment for capturing vs. non-capturing cases
+    static constexpr bool mayCapture = false;
+
     constexpr EnPassant(Square from, Square to)
         : from_(from), to_(to), player_(from_.index() < to_.index() ? Player::WHITE : Player::BLACK) {}
 

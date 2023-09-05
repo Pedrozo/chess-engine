@@ -1,7 +1,9 @@
-#ifndef CHESS_BOARD_POSITIONBITBOARDS_HPP
-#define CHESS_BOARD_POSITIONBITBOARDS_HPP
+#ifndef CHESS_BOARD_PIECECENTRIC_HPP
+#define CHESS_BOARD_PIECECENTRIC_HPP
 
+#include <array>
 #include <optional>
+#include <functional>
 
 #include "chess/Piece.hpp"
 #include "chess/Player.hpp"
@@ -16,9 +18,21 @@
 
 namespace chess::board {
 
-class PositionBitBoards {
+class PieceCentric {
 public:
-    explicit PositionBitBoards(std::initializer_list<std::pair<Square, PlayerPiece>> pieces);
+    template<typename ForwardIt>
+    PieceCentric(ForwardIt begin, ForwardIt end)
+        : occupancy_(), previouslyMoved_(), playerOccupancy_(), playerAttack_(), pieces_(), passant_(), hash_() {
+        
+        std::for_each(begin, end, [&] (const std::pair<Square, PlayerPiece>& squarePiece) {
+            addPiece(squarePiece.first, squarePiece.second);
+        });
+
+        updateAttack();
+    }
+
+    explicit PieceCentric(std::initializer_list<std::pair<Square, PlayerPiece>> pieces)
+        : PieceCentric(pieces.begin(), pieces.end()) {}
 
     const OccupancyBitBoard& occupancy() const noexcept {
         return occupancy_;
@@ -58,6 +72,14 @@ public:
 
     void makeMove(const move::Promotion& promotionMove, PlayerPiece capturedPiece);
 
+    friend bool operator==(const PieceCentric&, const PieceCentric&);
+
+    friend bool operator!=(const PieceCentric& board1, const PieceCentric& board2) {
+        return !(board1 == board2);
+    }
+
+    friend struct std::hash<PieceCentric>;
+
 private:
     void updateAttack();
 
@@ -73,13 +95,24 @@ private:
 
     OccupancyBitBoard occupancy_;
     BitBoard previouslyMoved_;
-    BitBoard playerOccupancy_[2];
-    BitBoard playerAttack_[2];
-    BitBoard pieces_[12];
+    std::array<BitBoard, 2> playerOccupancy_;
+    std::array<BitBoard, 2> playerAttack_;
+    std::array<BitBoard, 12> pieces_;
     std::optional<Square> passant_;
     hash::ZobristHashing hash_;
 };
 
 } // namespace chess::board
 
-#endif // CHESS_BOARD_POSITIONBITBOARDS_HPP
+namespace std {
+
+template<>
+struct hash<chess::board::PieceCentric> {
+    std::size_t operator()(const chess::board::PieceCentric& board) const {
+        return board.hash_.get();
+    }
+};
+
+} // namespace std
+
+#endif // CHESS_BOARD_PIECECENTRIC_HPP

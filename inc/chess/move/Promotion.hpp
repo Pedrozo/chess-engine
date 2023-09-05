@@ -10,6 +10,8 @@ namespace chess::move {
 
 class Promotion {
 public:
+    static constexpr bool mayCapture = true;
+
     constexpr Promotion(Square from, Square to, PlayerPiece promotedPiece)
         : from_(from), to_(to), promotedPiece_(promotedPiece) {}
 

@@ -1,15 +1,10 @@
-#include "chess/board/PositionBitBoards.hpp"
+#include "chess/board/PieceCentric.hpp"
+
+#include <algorithm>
 
 namespace chess::board {
 
-PositionBitBoards::PositionBitBoards(std::initializer_list<std::pair<Square, PlayerPiece>> pieces) {
-    for (const auto& squarePiece : pieces)
-        addPiece(squarePiece.first, squarePiece.second);
-
-    updateAttack();
-}
-
-bool PositionBitBoards::isLegal(const move::Castling& castlingMove) const noexcept {
+bool PieceCentric::isLegal(const move::Castling& castlingMove) const noexcept {
     BitBoard unmoved = ~previouslyMoved_;
 
     BitBoardSquare kingBit = BitBoardSquare(castlingMove.kingSquare());
@@ -33,7 +28,7 @@ bool PositionBitBoards::isLegal(const move::Castling& castlingMove) const noexce
     return (attack(opponent(castlingMove.player())) & (castlingMove.kingPathSquares() | kingBit)).isEmpty();
 }
 
-void PositionBitBoards::makeMove(const move::Regular& regularMove, PlayerPiece movedPiece) {
+void PieceCentric::makeMove(const move::Regular& regularMove, PlayerPiece movedPiece) {
     constexpr BitBoard passantRanks[2] = {
         Rank::of(a2).bitboard() | Rank::of(a4).bitboard(),
         Rank::of(a7).bitboard() | Rank::of(a5).bitboard()
@@ -56,35 +51,35 @@ void PositionBitBoards::makeMove(const move::Regular& regularMove, PlayerPiece m
     }
 }
 
-void PositionBitBoards::makeMove(const move::Regular& regularMove, PlayerPiece movedPiece, PlayerPiece capturedPiece) {
+void PieceCentric::makeMove(const move::Regular& regularMove, PlayerPiece movedPiece, PlayerPiece capturedPiece) {
     removePiece(regularMove.to(), capturedPiece);
     movePiece(regularMove.from(), regularMove.to(), movedPiece);
     passant_ = std::nullopt;
     updateAttack();
 }
 
-void PositionBitBoards::makeMove(const move::Castling& castlingMove) {
+void PieceCentric::makeMove(const move::Castling& castlingMove) {
     movePiece(castlingMove.kingSquare(), castlingMove.targetKingSquare(), PlayerPiece(castlingMove.player(), Piece::KING));
     movePiece(castlingMove.rookSquare(), castlingMove.targetRookSquare(), PlayerPiece(castlingMove.player(), Piece::ROOK));
     passant_ = std::nullopt;
     updateAttack();
 }
 
-void PositionBitBoards::makeMove(const move::EnPassant& enPassantMove) {
+void PieceCentric::makeMove(const move::EnPassant& enPassantMove) {
     removePiece(enPassantMove.captured(), PlayerPiece(opponent(enPassantMove.player()), Piece::PAWN));
     movePiece(enPassantMove.from(), enPassantMove.to(), PlayerPiece(enPassantMove.player(), Piece::PAWN));
     passant_ = std::nullopt;
     updateAttack();
 }
 
-void PositionBitBoards::makeMove(const move::Promotion& promotionMove) {
+void PieceCentric::makeMove(const move::Promotion& promotionMove) {
     removePiece(promotionMove.from(), PlayerPiece(promotionMove.promotedPiece().player(), Piece::PAWN));
     addPiece(promotionMove.to(), promotionMove.promotedPiece());
     passant_ = std::nullopt;
     updateAttack();
 }
 
-void PositionBitBoards::makeMove(const move::Promotion& promotionMove, PlayerPiece capturedPiece) {
+void PieceCentric::makeMove(const move::Promotion& promotionMove, PlayerPiece capturedPiece) {
     Player player = promotionMove.promotedPiece().player();
     removePiece(promotionMove.from(), PlayerPiece(player, Piece::PAWN));
     replacePiece(promotionMove.to(), capturedPiece, promotionMove.promotedPiece());
@@ -92,12 +87,12 @@ void PositionBitBoards::makeMove(const move::Promotion& promotionMove, PlayerPie
     updateAttack();
 }
 
-void PositionBitBoards::updateAttack() {
+void PieceCentric::updateAttack() {
     updateAttack(Player::WHITE);
     updateAttack(Player::BLACK);
 }
 
-void PositionBitBoards::updateAttack(Player player) {
+void PieceCentric::updateAttack(Player player) {
     auto& atk = playerAttack_[player];
 
     atk = BitBoard(0);
@@ -120,7 +115,7 @@ void PositionBitBoards::updateAttack(Player player) {
         atk |= kingAttack(king.square());
 }
 
-void PositionBitBoards::addPiece(Square square, PlayerPiece piece) {
+void PieceCentric::addPiece(Square square, PlayerPiece piece) {
     BitBoardSquare pieceBitBoard(square);
 
     occupancy_.set(square);
@@ -130,7 +125,7 @@ void PositionBitBoards::addPiece(Square square, PlayerPiece piece) {
     hash_.update(square, piece);
 }
 
-void PositionBitBoards::movePiece(Square fromSquare, Square toSquare, PlayerPiece piece) {
+void PieceCentric::movePiece(Square fromSquare, Square toSquare, PlayerPiece piece) {
     BitBoardSquare fromBitBoard(fromSquare);
     BitBoardSquare toBitBoard(toSquare);
     BitBoard moveBitBoard = fromBitBoard | toBitBoard;
@@ -146,7 +141,7 @@ void PositionBitBoards::movePiece(Square fromSquare, Square toSquare, PlayerPiec
     hash_.update(toSquare, piece);
 }
 
-void PositionBitBoards::removePiece(Square square, PlayerPiece piece) {
+void PieceCentric::removePiece(Square square, PlayerPiece piece) {
     BitBoard pieceBitBoard = BitBoardSquare(square);
 
     occupancy_.reset(square);
@@ -157,7 +152,7 @@ void PositionBitBoards::removePiece(Square square, PlayerPiece piece) {
     hash_.update(square, piece);
 }
 
-void PositionBitBoards::replacePiece(Square square, PlayerPiece previousPiece, PlayerPiece newPiece) {
+void PieceCentric::replacePiece(Square square, PlayerPiece previousPiece, PlayerPiece newPiece) {
     BitBoard pieceBitBoard = BitBoardSquare(square);
 
     pieces_[previousPiece] &= ~pieceBitBoard;
@@ -168,6 +163,33 @@ void PositionBitBoards::replacePiece(Square square, PlayerPiece previousPiece, P
 
     hash_.update(square, previousPiece);
     hash_.update(square, newPiece);
+}
+
+bool operator==(const PieceCentric& board1, const PieceCentric& board2) {
+    if (board1.hash_.get() != board2.hash_.get())
+        return false;
+
+    if (board1.pieces_ != board2.pieces_)
+        return false;
+
+    constexpr std::array<move::Castling, 4> castlingMoves = {
+        move::Castling(Player::WHITE, move::Castling::KING_SIDE),
+        move::Castling(Player::WHITE, move::Castling::QUEEN_SIDE),
+        move::Castling(Player::BLACK, move::Castling::KING_SIDE),
+        move::Castling(Player::BLACK, move::Castling::QUEEN_SIDE)
+    };
+
+    auto boardsHaveDiffCastlingRights = [&board1, &board2] (const move::Castling& castlingMove) {
+        return board1.isLegal(castlingMove) != board2.isLegal(castlingMove);
+    };
+
+    if (std::any_of(castlingMoves.begin(), castlingMoves.end(), boardsHaveDiffCastlingRights))
+        return false;
+
+    if (board1.passant_ != board2.passant_)
+        return false;
+
+    return true;
 }
 
 } // namespace chess::board

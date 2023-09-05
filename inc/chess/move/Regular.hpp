@@ -7,6 +7,8 @@ namespace chess::move {
 
 class Regular {
 public:
+    static constexpr bool mayCapture = true;
+
     constexpr Regular(Square from, Square to) : from_(from), to_(to) {}
 
     constexpr Square from() const noexcept {
