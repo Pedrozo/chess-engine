@@ -11,12 +11,21 @@
 #include "chess/board/Visitor.hpp"
 
 #include <optional>
+#include <algorithm>
 
 namespace chess::board {
 
 class SquareCentric {
 public:
-    explicit SquareCentric(std::initializer_list<std::pair<Square, PlayerPiece>> pieces);
+    template<typename ForwardIt>
+    SquareCentric(ForwardIt begin, ForwardIt end) : squares_() {
+        std::for_each(begin, end, [&] (const std::pair<Square, PlayerPiece>& squarePiece) {
+            squares_[squarePiece.first] = squarePiece.second;
+        });
+    }
+
+    explicit SquareCentric(std::initializer_list<std::pair<Square, PlayerPiece>> pieces)
+        : SquareCentric(pieces.begin(), pieces.end()) {}
 
     std::optional<PlayerPiece> at(Square square) const {
         return squares_[square];

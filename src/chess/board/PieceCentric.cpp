@@ -4,13 +4,6 @@
 
 namespace chess::board {
 
-PieceCentric::PieceCentric(std::initializer_list<std::pair<Square, PlayerPiece>> pieces) {
-    for (const auto& squarePiece : pieces)
-        addPiece(squarePiece.first, squarePiece.second);
-
-    updateAttack();
-}
-
 bool PieceCentric::isLegal(const move::Castling& castlingMove) const noexcept {
     BitBoard unmoved = ~previouslyMoved_;
 

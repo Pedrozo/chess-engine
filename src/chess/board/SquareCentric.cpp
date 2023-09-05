@@ -2,11 +2,6 @@
 
 namespace chess::board {
 
-SquareCentric::SquareCentric(std::initializer_list<std::pair<Square, PlayerPiece>> pieces) : squares_() {
-    for (const auto& squarePiece : pieces)
-        squares_[squarePiece.first] = squarePiece.second;
-}
-
 std::optional<PlayerPiece> SquareCentric::makeMove(const move::Regular& regularMove) {
     std::optional<PlayerPiece> captured = squares_[regularMove.to()];
     squares_[regularMove.to()] = squares_[regularMove.from()];

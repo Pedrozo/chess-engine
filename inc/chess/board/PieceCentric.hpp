@@ -20,7 +20,19 @@ namespace chess::board {
 
 class PieceCentric {
 public:
-    explicit PieceCentric(std::initializer_list<std::pair<Square, PlayerPiece>> pieces);
+    template<typename ForwardIt>
+    PieceCentric(ForwardIt begin, ForwardIt end)
+        : occupancy_(), previouslyMoved_(), playerOccupancy_(), playerAttack_(), pieces_(), passant_(), hash_() {
+        
+        std::for_each(begin, end, [&] (const std::pair<Square, PlayerPiece>& squarePiece) {
+            addPiece(squarePiece.first, squarePiece.second);
+        });
+
+        updateAttack();
+    }
+
+    explicit PieceCentric(std::initializer_list<std::pair<Square, PlayerPiece>> pieces)
+        : PieceCentric(pieces.begin(), pieces.end()) {}
 
     const OccupancyBitBoard& occupancy() const noexcept {
         return occupancy_;
