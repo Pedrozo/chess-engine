@@ -14,13 +14,13 @@ namespace chess::search {
 class Position {
 public:
     template<typename ForwardIt>
-    Position(ForwardIt begin, ForwardIt end)
+    Position(ForwardIt begin, ForwardIt end, Player firstPlayerInMove = Player::WHITE)
         : squareCentric_(begin, end), pieceCentric_(begin, end), repeatedPositionCount_() {
-        countRepetition(pieceCentric_);
+        countRepetition(firstPlayerInMove, pieceCentric_);
     }
 
-    explicit Position(std::initializer_list<std::pair<Square, PlayerPiece>> pieces)
-        : Position(pieces.begin(), pieces.end()) {}
+    explicit Position(std::initializer_list<std::pair<Square, PlayerPiece>> pieces, Player firstPlayerInMove = Player::WHITE)
+        : Position(pieces.begin(), pieces.end(), firstPlayerInMove) {}
 
     const board::SquareCentric& squareCentric() const noexcept {
         return squareCentric_;
@@ -42,20 +42,20 @@ public:
 
     void unmakeMove(const BackwardComputedMove& backwardComputedMove);
 
-    std::size_t repetitionCount(const board::PieceCentric& board) const;
+    std::size_t repetitionCount(Player playerInMove, const board::PieceCentric& board) const;
 
 private:
-    void countRepetition(const board::PieceCentric& board) {
-        ++repeatedPositionCount_[board];
+    void countRepetition(Player playerInMove, const board::PieceCentric& board) {
+        ++repeatedPositionCount_[playerInMove][board];
     }
 
-    void discountRepetion(const board::PieceCentric& board) {
-        --repeatedPositionCount_[board];
+    void discountRepetion(Player playerInMove, const board::PieceCentric& board) {
+        --repeatedPositionCount_[playerInMove][board];
     }
 
     board::SquareCentric squareCentric_;
     board::PieceCentric pieceCentric_;
-    std::unordered_map<board::PieceCentric, std::size_t> repeatedPositionCount_;
+    std::array<std::unordered_map<board::PieceCentric, std::size_t>, 2> repeatedPositionCount_;
 };
 
 } // namespace chess::search
