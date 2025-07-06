@@ -7,6 +7,7 @@ add_library(chess_engine
   src/chess/diagonal.cpp
   src/chess/antidiagonal.cpp 
   src/chess/rotated_bitboard.cpp
+  src/chess/rank_attack.cpp
 )
 
 target_include_directories(chess_engine PUBLIC ./inc)
