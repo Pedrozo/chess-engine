@@ -9,6 +9,7 @@ add_library(chess_engine
   src/chess/rotated_bitboard.cpp
   src/chess/rank_attack.cpp
   src/chess/file_attack.cpp
+  src/chess/diagonal_attack.cpp
 )
 
 target_include_directories(chess_engine PUBLIC ./inc)
