@@ -7,8 +7,6 @@
 
 namespace chess {
 
-void initialize_rotated_boards();
-
 struct rotate_45_fn { square operator()(square s) const; };
 
 struct rotate_90_fn { square operator()(square s) const; };

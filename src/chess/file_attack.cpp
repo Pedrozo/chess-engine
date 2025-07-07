@@ -3,6 +3,7 @@
 #include "chess/direction.hpp"
 #include "chess/file.hpp"
 #include "chess/attack.hpp"
+#include "chess/initialization.hpp"
 #include "chess/squares_sequence.hpp"
 
 namespace ranges = std::ranges;
@@ -19,7 +20,7 @@ bitboard precomputed_attacks[64][256];
 
 } // namespace
 
-void detail::initialize_file_attacks() {
+void initialize_file_attacks() {
   for (square from : all_squares()) {
     for (unsigned i = 0; i < 256; i++) {
       const bitboard occupied{uint64_t(i)};

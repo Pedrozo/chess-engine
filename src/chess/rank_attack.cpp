@@ -1,6 +1,7 @@
 #include "chess/rank.hpp"
 #include "chess/file.hpp"
 #include "chess/direction.hpp"
+#include "chess/initialization.hpp"
 #include "chess/attack.hpp"
 #include "chess/squares_sequence.hpp"
 #include "chess/rotated_bitboard.hpp"
@@ -16,7 +17,7 @@ bitboard precomputed_attacks[64][256];
 
 } // namespace
 
-void detail::initialize_rank_attacks() {
+void initialize_rank_attacks() {
   for (square s : all_squares()) {
     for (unsigned i = 0; i < 256; i++) {
       const bitboard occupied = bitboard(i) << unsigned(*rank_of(s).begin());

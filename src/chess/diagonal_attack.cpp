@@ -1,6 +1,7 @@
 #include "chess/attack.hpp"
 #include "chess/squares_sequence.hpp"
 #include "chess/diagonal.hpp"
+#include "chess/initialization.hpp"
 
 #include <ranges>
 
@@ -18,7 +19,7 @@ bitboard precomputed_attacks[64][256];
 
 } // namespace
 
-void detail::initialize_diagonal_attacks() {
+void initialize_diagonal_attacks() {
   for (const square from : all_squares()) {
     for (unsigned i = 0; i < 256; i++) {
       const bitboard occupied{uint64_t(i)};

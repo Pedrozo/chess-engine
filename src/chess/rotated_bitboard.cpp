@@ -6,6 +6,7 @@
 #include "chess/diagonal.hpp"
 #include "chess/antidiagonal.hpp"
 #include "chess/squares_iterator.hpp"
+#include "chess/initialization.hpp"
 
 namespace chess {
 
