@@ -1,15 +1,22 @@
 #include "chess/rank.hpp"
 #include "chess/file.hpp"
 #include "chess/direction.hpp"
-#include "chess/rank_attack.hpp"
+#include "chess/attack.hpp"
 #include "chess/squares_sequence.hpp"
 #include "chess/rotated_bitboard.hpp"
 
 using std::size_t;
+using std::uint64_t;
 
 namespace chess {
 
-rank_attack::rank_attack() {
+namespace {
+
+bitboard precomputed_attacks[64][256];
+
+} // namespace
+
+void detail::initialize_rank_attacks() {
   for (square s : all_squares()) {
     for (unsigned i = 0; i < 256; i++) {
       const bitboard occupied = bitboard(i) << unsigned(*rank_of(s).begin());
@@ -37,13 +44,13 @@ rank_attack::rank_attack() {
         }
       }
 
-      computed_[unsigned(s)][i] = attack;
+      precomputed_attacks[unsigned(s)][i] = attack;
     }
   }
 }
 
-bitboard rank_attack::operator()(square from, bitboard occupied) const {
-  return computed_[unsigned(from)][static_cast<size_t>(align_rank(from, occupied))];
+bitboard rank_attack(square from, bitboard occupied) {
+  return precomputed_attacks[unsigned(from)][uint64_t(align_rank(from, occupied))];
 }
 
 } // namespace chess

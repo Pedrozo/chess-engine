@@ -19,6 +19,10 @@ public:
 
   explicit constexpr operator int() const { return int(square_); }
 
+  friend constexpr bool operator==(square lhs, square rhs) { return lhs.square_ == rhs.square_; }
+
+  friend constexpr bool operator!=(square lhs, square rhs) { return lhs.square_ != rhs.square_; }
+
 private:
   unsigned square_;
 };

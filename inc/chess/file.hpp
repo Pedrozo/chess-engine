@@ -10,6 +10,7 @@ namespace chess {
 class file : public std::ranges::view_interface<file> {
 public:
   using iterator = squares_iterator<8>;
+  using reverse_iterator = std::reverse_iterator<iterator>;
 
   explicit constexpr file(unsigned idx) : idx_(idx) {
     if (idx > 7) {
@@ -25,7 +26,11 @@ public:
 
   constexpr iterator begin() const { return iterator(idx_); }
 
-  constexpr iterator end() const { return iterator(idx_ + 8); }
+  constexpr iterator end() const { return iterator(idx_ + 64); }
+
+  constexpr reverse_iterator rbegin() const { return reverse_iterator(end()); }
+
+  constexpr reverse_iterator rend() const { return reverse_iterator(begin()); }
 
 private:
   unsigned idx_;

@@ -83,20 +83,20 @@ square rotate_135_fn::operator()(square s) const {
   return rotated_135[unsigned(s)];
 }
 
-std::byte align_rank(square s, bitboard bb) {
-  return static_cast<std::byte>(std::uint64_t(bb >>= unsigned(*rank_of(s).begin())));
+bitboard align_rank(square s, bitboard bb) {
+  return bb >>= unsigned(*rank_of(s).begin());
 }
 
-std::byte align_file(square s, rotated_bitboard_90 bb) {
-  return static_cast<std::byte>(std::uint64_t(bitboard(bb) >> shift_90[unsigned(s)]));
+bitboard align_file(square s, rotated_bitboard_90 bb) {
+  return bitboard(bb) >> shift_90[unsigned(s)];
 }
 
-std::byte align_diagonal(square s, rotated_bitboard_45 bb) {  
-  return static_cast<std::byte>(std::uint64_t(bitboard(bb) >> shift_45[unsigned(s)]));
+bitboard align_diagonal(square s, rotated_bitboard_45 bb) {  
+  return bitboard(bb) >> shift_45[unsigned(s)];
 }
 
-std::byte align_antidiagonal(square s, rotated_bitboard_135 bb) {
-  return static_cast<std::byte>(std::uint64_t(bitboard(bb) >> shift_135[unsigned(s)]));
+bitboard align_antidiagonal(square s, rotated_bitboard_135 bb) {
+  return bitboard(bb) >> shift_135[unsigned(s)];
 }
 
 } // namespace chess

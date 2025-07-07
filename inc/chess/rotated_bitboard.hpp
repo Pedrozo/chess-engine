@@ -24,7 +24,7 @@ inline constexpr rotate_135_fn rotate_135{};
 template<typename R>
 class rotated_bitboard {
 public:
-  explicit constexpr rotated_bitboard(R rotation = R()) : tup_(bitboard(0), rotation) {}
+  explicit constexpr rotated_bitboard(R rotation = R()) : tup_(bitboard(), rotation) {}
 
   constexpr void set(square s) { board().set(rotate(s)); }
 
@@ -50,12 +50,12 @@ using rotated_bitboard_90 = rotated_bitboard<rotate_90_fn>;
 
 using rotated_bitboard_135 = rotated_bitboard<rotate_135_fn>;
 
-std::byte align_rank(square s, bitboard bb);
+bitboard align_rank(square s, bitboard bb);
 
-std::byte align_file(square s, rotated_bitboard_90 bb);
+bitboard align_file(square s, rotated_bitboard_90 bb);
 
-std::byte align_diagonal(square s, rotated_bitboard_45 bb);
+bitboard align_diagonal(square s, rotated_bitboard_45 bb);
 
-std::byte align_antidiagonal(square s, rotated_bitboard_135 bb);
+bitboard align_antidiagonal(square s, rotated_bitboard_135 bb);
 
 } // namespace chess
