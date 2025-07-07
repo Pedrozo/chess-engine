@@ -29,7 +29,7 @@ inline void initialize_attack_boards() {
   detail::initialize_rank_attacks();
   detail::initialize_file_attacks();
   detail::initialize_diagonal_attacks();
-  // detail::initialize_antidiagonal_attacks();
+  detail::initialize_antidiagonal_attacks();
 }
 
 } // namespace chess

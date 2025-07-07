@@ -10,6 +10,7 @@ namespace chess {
 class antidiagonal : public std::ranges::view_interface<antidiagonal> {
 public:
   using iterator = squares_iterator<7>;
+  using reverse_iterator = std::reverse_iterator<iterator>;
 
   explicit operator bitboard() const;
 
@@ -18,6 +19,10 @@ public:
   iterator begin() const;
   
   iterator end() const;
+
+  reverse_iterator rbegin() const { return reverse_iterator(end()); }
+
+  reverse_iterator rend() const { return reverse_iterator(begin()); }
   
   friend antidiagonal antidiagonal_of(square s);
   
