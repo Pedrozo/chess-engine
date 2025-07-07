@@ -12,12 +12,15 @@ void initialize_diagonal_attacks();
 
 void initialize_antidiagonal_attacks();
 
+void initialize_knight_attacks();
+
 inline void initialize() {
   initialize_rotated_boards();
   initialize_rank_attacks();
   initialize_file_attacks();
   initialize_diagonal_attacks();
   initialize_antidiagonal_attacks();
+  initialize_knight_attacks();
 }
 
 } // namespace chess

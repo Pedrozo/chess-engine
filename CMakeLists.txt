@@ -11,6 +11,7 @@ add_library(chess_engine
   src/chess/file_attack.cpp
   src/chess/diagonal_attack.cpp
   src/chess/antidiagonal_attack.cpp
+  src/chess/knight_attack.cpp
 )
 
 target_include_directories(chess_engine PUBLIC ./inc)

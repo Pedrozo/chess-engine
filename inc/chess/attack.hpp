@@ -13,4 +13,6 @@ bitboard diagonal_attack(square from, rotated_bitboard_45 occupied);
 
 bitboard antidiagonal_attack(square from, rotated_bitboard_135 occupied);
 
+bitboard knight_attack(square from);
+
 } // namespace chess
