@@ -30,4 +30,12 @@ inline constexpr auto to_east = to_direction_fn<1>{};
 
 inline constexpr auto to_west = to_direction_fn<-1>{};
 
+inline constexpr auto to_northeast = to_direction_fn<9>{};
+
+inline constexpr auto to_northwest = to_direction_fn<7>{};
+
+inline constexpr auto to_southeast = to_direction_fn<-7>{};
+
+inline constexpr auto to_southwest = to_direction_fn<-9>{};
+
 } // namespace chess

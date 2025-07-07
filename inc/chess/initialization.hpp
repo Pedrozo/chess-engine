@@ -14,6 +14,8 @@ void initialize_antidiagonal_attacks();
 
 void initialize_knight_attacks();
 
+void initialize_king_attacks();
+
 inline void initialize() {
   initialize_rotated_boards();
   initialize_rank_attacks();
@@ -21,6 +23,7 @@ inline void initialize() {
   initialize_diagonal_attacks();
   initialize_antidiagonal_attacks();
   initialize_knight_attacks();
+  initialize_king_attacks();
 }
 
 } // namespace chess

@@ -15,15 +15,14 @@ bitboard precomputed_attacks[64];
 
 void initialize_knight_attacks() {
   constexpr bitboard not_bottom = ~bitboard(rank(0));
-  constexpr bitboard not_top =    ~bitboard(rank(7));
-  constexpr bitboard not_left =   ~bitboard(file(0));
-  constexpr bitboard not_right =  ~bitboard(file(7));
+  constexpr bitboard not_top    = ~bitboard(rank(7));
+  constexpr bitboard not_left   = ~bitboard(file(0));
+  constexpr bitboard not_right  = ~bitboard(file(7));
 
   constexpr bitboard not_double_bottom = not_bottom & ~bitboard(rank(1));
-  constexpr bitboard not_double_top =    not_top    & ~bitboard(rank(6));
-  constexpr bitboard not_double_left =   not_left   & ~bitboard(file(1));
-  constexpr bitboard not_double_right =  not_right  & ~bitboard(file(6));
-
+  constexpr bitboard not_double_top    = not_top    & ~bitboard(rank(6));
+  constexpr bitboard not_double_left   = not_left   & ~bitboard(file(1));
+  constexpr bitboard not_double_right  = not_right  & ~bitboard(file(6));
 
   for (const square from : all_squares()) {
     const bitboard from_bit(from);
