@@ -12,6 +12,8 @@ namespace chess {
 
 namespace {
 
+constexpr bitboard bottom_rank{rank(0)};
+
 std::array<unsigned, 64> shift_45;
 std::array<square, 64> rotated_45;
 
@@ -85,19 +87,19 @@ square rotate_135_fn::operator()(square s) const {
 }
 
 bitboard align_rank(square s, bitboard bb) {
-  return bb >>= unsigned(*rank_of(s).begin());
+  return (bb >>= unsigned(*rank_of(s).begin())) & bottom_rank;
 }
 
 bitboard align_file(square s, rotated_bitboard_90 bb) {
-  return bitboard(bb) >> shift_90[unsigned(s)];
+  return (bitboard(bb) >> shift_90[unsigned(s)]) & bottom_rank;
 }
 
 bitboard align_diagonal(square s, rotated_bitboard_45 bb) {  
-  return bitboard(bb) >> shift_45[unsigned(s)];
+  return (bitboard(bb) >> shift_45[unsigned(s)]) & bottom_rank;
 }
 
 bitboard align_antidiagonal(square s, rotated_bitboard_135 bb) {
-  return bitboard(bb) >> shift_135[unsigned(s)];
+  return (bitboard(bb) >> shift_135[unsigned(s)]) & bottom_rank;
 }
 
 } // namespace chess

@@ -14,6 +14,7 @@ add_library(chess_engine
   src/chess/knight_attack.cpp
   src/chess/king_attack.cpp
   src/chess/pawns_attack.cpp
+  src/chess/board/piece_centric.cpp
 )
 
 target_include_directories(chess_engine PUBLIC ./inc)

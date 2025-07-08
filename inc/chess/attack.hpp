@@ -14,7 +14,7 @@ bitboard diagonal_attack(square from, rotated_bitboard_45 occupied);
 
 bitboard antidiagonal_attack(square from, rotated_bitboard_135 occupied);
 
-bitboard pawns_attack(player turn, bitboard pawns);
+bitboard pawns_attack(player turn, bitboard pawns, bitboard occupied);
 
 bitboard knight_attack(square from);
 
