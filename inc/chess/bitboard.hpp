@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <ranges>
 #include <iostream>
+#include <bit>
 #include "square.hpp"
 
 namespace chess {
@@ -19,11 +20,15 @@ public:
 
   explicit constexpr operator bool() const { return bool(board_); }
 
+  explicit constexpr operator square() const { return square(std::countr_zero(board_)); }
+
   constexpr void set(square s) { *this |= bitboard(s); }
 
   constexpr void reset(square s) { *this &= ~bitboard(s); }
 
   constexpr void flip(square s) { *this ^= bitboard(s); }
+
+  constexpr int popcount() const { return std::popcount(board_); }
 
   constexpr bitboard operator~() const { return bitboard(~board_); }
 
