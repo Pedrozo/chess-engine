@@ -14,6 +14,7 @@ add_library(chess_engine
   src/chess/knight_attack.cpp
   src/chess/king_attack.cpp
   src/chess/pawns_attack.cpp
+  src/chess/board/square_centric.cpp
   src/chess/board/piece_centric.cpp
   src/chess/search/generate_moves.cpp
 )
