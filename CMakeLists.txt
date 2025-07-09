@@ -15,6 +15,7 @@ add_library(chess_engine
   src/chess/king_attack.cpp
   src/chess/pawns_attack.cpp
   src/chess/board/piece_centric.cpp
+  src/chess/search/generate_moves.cpp
 )
 
 target_include_directories(chess_engine PUBLIC ./inc)
