@@ -46,7 +46,7 @@ bitboard piece_centric::occupied_of(player_piece pp) const {
   return pieces_[static_cast<int>(std::get<0>(pp))][static_cast<int>(std::get<1>(pp))];
 }
 
-bitboard piece_centric::attack_of(player p) const {
+bitboard piece_centric::attacked_of(player p) const {
   return player_attacks_[static_cast<int>(p)];
 }
 
@@ -82,7 +82,7 @@ void piece_centric::make_move(square from, square to, player_piece moved_piece, 
 }
 
 bool piece_centric::in_check(player p) const {
-  return bool(attack_of(opponent_player(p)) & occupied_of(player_piece{p, piece::king}));
+  return bool(attacked_of(opponent_player(p)) & occupied_of(player_piece{p, piece::king}));
 }
 
 void piece_centric::update_attack_boards() {

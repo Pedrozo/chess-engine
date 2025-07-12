@@ -26,7 +26,7 @@ public:
 
   bitboard occupied_of(player_piece pp) const;
 
-  bitboard attack_of(player p) const;
+  bitboard attacked_of(player p) const;
 
   bool in_check(player p) const;
 
