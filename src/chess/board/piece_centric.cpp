@@ -22,27 +22,27 @@ piece_centric::piece_centric(std::initializer_list<std::pair<square, player_piec
   update_attack_boards();
 }
 
-bitboard piece_centric::positions() const {
+bitboard piece_centric::occupied() const {
   return occupied_;
 }
 
-rotated_bitboard_45 piece_centric::rotated_positions_45() const {
+rotated_bitboard_45 piece_centric::rotated_occupied_45() const {
   return occupied_45_;
 }
 
-rotated_bitboard_90 piece_centric::rotated_positions_90() const {
+rotated_bitboard_90 piece_centric::rotated_occupied_90() const {
   return occupied_90_;
 }
 
-rotated_bitboard_135 piece_centric::rotated_positions_135() const {
+rotated_bitboard_135 piece_centric::rotated_occupied_135() const {
   return occupied_135_;
 }
 
-bitboard piece_centric::positions_of(player p) const {
+bitboard piece_centric::occupied_of(player p) const {
   return player_occupied_[static_cast<int>(p)];
 }
 
-bitboard piece_centric::positions_of(player_piece pp) const {
+bitboard piece_centric::occupied_of(player_piece pp) const {
   return pieces_[static_cast<int>(std::get<0>(pp))][static_cast<int>(std::get<1>(pp))];
 }
 
@@ -82,7 +82,7 @@ void piece_centric::make_move(square from, square to, player_piece moved_piece, 
 }
 
 bool piece_centric::in_check(player p) const {
-  return bool(attack_of(opponent_player(p)) & positions_of(player_piece{p, piece::king}));
+  return bool(attack_of(opponent_player(p)) & occupied_of(player_piece{p, piece::king}));
 }
 
 void piece_centric::update_attack_boards() {

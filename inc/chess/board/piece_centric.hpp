@@ -14,17 +14,17 @@ class piece_centric {
 public:
   explicit piece_centric(std::initializer_list<std::pair<square, player_piece>> pieces);
 
-  bitboard positions() const;
+  bitboard occupied() const;
 
-  rotated_bitboard_45 rotated_positions_45() const;
+  rotated_bitboard_45 rotated_occupied_45() const;
 
-  rotated_bitboard_90 rotated_positions_90() const;
+  rotated_bitboard_90 rotated_occupied_90() const;
   
-  rotated_bitboard_135 rotated_positions_135() const;
+  rotated_bitboard_135 rotated_occupied_135() const;
 
-  bitboard positions_of(player p) const;
+  bitboard occupied_of(player p) const;
 
-  bitboard positions_of(player_piece pp) const;
+  bitboard occupied_of(player_piece pp) const;
 
   bitboard attack_of(player p) const;
 

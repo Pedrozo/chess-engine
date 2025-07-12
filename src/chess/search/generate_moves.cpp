@@ -27,21 +27,21 @@ concept attack_from_square = requires (const T& t) {
 std::vector<std::pair<square, square>> generate_moves(const board::piece_centric& pieces, player turn) {
   std::vector<std::pair<square, square>> moves;
 
-  const bitboard player_positions = pieces.positions_of(turn);
-  const bitboard opponent_positions = pieces.positions_of(opponent_player(turn));
+  const bitboard player_occupied = pieces.occupied_of(turn);
+  const bitboard opponent_occupied = pieces.occupied_of(opponent_player(turn));
 
   const auto moves_generator = [&] (player_piece pp, attack_from_square auto&& attack_func, bool captures) {
-    const bitboard positions = pieces.positions_of(pp);
+    const bitboard occupied = pieces.occupied_of(pp);
 
-    for (const bitboard from_bb : bitboard_squares(positions)) {
+    for (const bitboard from_bb : bitboard_squares(occupied)) {
       const square from(from_bb);
 
-      bitboard attack = attack_func(from) & ~player_positions;
+      bitboard attack = attack_func(from) & ~player_occupied;
 
       if (captures) {
-        attack &= opponent_positions;
+        attack &= opponent_occupied;
       } else {
-        attack &= ~opponent_positions;
+        attack &= ~opponent_occupied;
       }
 
       for (const bitboard to_bb : bitboard_squares(attack)) {
@@ -52,16 +52,16 @@ std::vector<std::pair<square, square>> generate_moves(const board::piece_centric
     }
   };
 
-  const auto pawn_fn = [&] (square s) { return pawns_attack(turn, bitboard(s), pieces.positions()); };
+  const auto pawn_fn = [&] (square s) { return pawns_attack(turn, bitboard(s), pieces.occupied()); };
 
   const auto bishop_fn = std::bind(bishop_attack, _1,
-    pieces.rotated_positions_45(), pieces.rotated_positions_135());
+    pieces.rotated_occupied_45(), pieces.rotated_occupied_135());
 
   const auto rook_fn = std::bind(rook_attack, _1,
-    pieces.positions(), pieces.rotated_positions_90());
+    pieces.occupied(), pieces.rotated_occupied_90());
 
-  const auto queen_fn = std::bind(queen_attack, _1, pieces.positions(),
-    pieces.rotated_positions_45(), pieces.rotated_positions_90(), pieces.rotated_positions_135());
+  const auto queen_fn = std::bind(queen_attack, _1, pieces.occupied(),
+    pieces.rotated_occupied_45(), pieces.rotated_occupied_90(), pieces.rotated_occupied_135());
 
   moves_generator(player_piece(turn, piece::pawn), pawn_fn, true);
   moves_generator(player_piece(turn, piece::knight), knight_attack, true);
