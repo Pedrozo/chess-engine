@@ -57,7 +57,12 @@ void state_machine::commit(const std::pair<square, square>& from_to) {
   const player_piece moved = squares_[from].value();
   const optional_player_piece captured = squares_.make_move(from, to);
 
-  pieces_.make_move(from, to, moved, captured);
+  if (captured) {
+    pieces_.make_move(from, to, moved, std::get<1>(captured.value()));
+  } else {
+    pieces_.make_move(from, to, moved);
+  }
+
   hist_.emplace(from, to, captured);
 
   if (captured) {
@@ -75,7 +80,12 @@ void state_machine::revert() {
   const auto [from, to, captured] = hist_.top();
 
   squares_.unmake_move(from, to, captured);
-  pieces_.make_move(from, to, squares_[from].value(), captured);
+  
+  if (captured) {
+    pieces_.make_move(from, to, squares_[from].value(), std::get<1>(captured.value()));
+  } else {
+    pieces_.make_move(from, to, squares_[from].value());
+  }
 
   if (captured) {
     const auto [playing, captured_piece] = captured.value();

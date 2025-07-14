@@ -30,7 +30,9 @@ public:
 
   bool in_check(player p) const;
 
-  void make_move(square from, square to, player_piece moved_piece, optional_player_piece captured_piece);
+  void make_move(square from, square to, player_piece moved_piece);
+
+  void make_move(square from, square to, player_piece moved_piece, piece captured_piece);
 
 private:
   void update_attack_boards();

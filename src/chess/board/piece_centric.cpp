@@ -4,6 +4,53 @@
 
 namespace chess::board {
 
+namespace {
+
+template<typename T>
+concept xorable = requires (T& a, T& b) {
+  { a ^ b } -> std::convertible_to<T>;
+};
+
+constexpr void move_pieces(square from, square to, auto&... boards) {
+  bitboard const from_to_bb = bitboard(from) | bitboard(to);
+
+  auto fn = [&] (auto self, auto& first, auto&... others) {
+    if constexpr (xorable<decltype(first)>) {
+      first ^= from_to_bb;
+    } else {
+      first.flip(from);
+      first.flip(to);
+    }
+
+    if constexpr (sizeof...(others) > 0) {
+      self(self, others...);
+    }
+  };
+
+  fn(fn, boards...);
+}
+
+constexpr void remove_pieces(square from, auto&... boards) {
+  bitboard const from_bb(from);
+
+  auto fn = [&] (auto self, auto& first, auto&... others) {
+    if constexpr (xorable<decltype(first)>) {
+      first ^= from_bb;
+    } else {
+      first.flip(from);
+    }
+
+    if constexpr (sizeof...(others) > 0) {
+      self(self, others...);
+    }
+  };
+
+  fn(fn, boards...);
+}
+
+} // namespace
+
+
 piece_centric::piece_centric(std::initializer_list<std::pair<square, player_piece>> pieces) {
   for (const auto& [s, pl_pi] : pieces) {
     const int pl = static_cast<int>(std::get<0>(pl_pi));
@@ -50,33 +97,25 @@ bitboard piece_centric::attacked_of(player p) const {
   return player_attacks_[static_cast<int>(p)];
 }
 
-void piece_centric::make_move(square from, square to, player_piece moved_piece, optional_player_piece captured_piece) {
-  const int playing  = static_cast<int>(std::get<0>(moved_piece));
+void piece_centric::make_move(square from, square to, player_piece moved_piece) {
+  const int playing = static_cast<int>(std::get<0>(moved_piece));
+  const int moving = static_cast<int>(std::get<1>(moved_piece));
+
+  move_pieces(from, to,
+    pieces_[playing][moving], player_occupied_[playing], occupied_, occupied_45_, occupied_90_, occupied_135_);
+  
+  update_attack_boards();
+}
+
+void piece_centric::make_move(square from, square to, player_piece moved_piece, piece captured_piece) {
+  const int playing = static_cast<int>(std::get<0>(moved_piece));
+  const int moving = static_cast<int>(std::get<1>(moved_piece));
+  const int capturing = static_cast<int>(captured_piece);
   const int opponent = !playing;
-  const int moved    = static_cast<int>(std::get<1>(moved_piece));
 
-  const bitboard from_bb(from);
-  const bitboard to_bb(to);
-  const bitboard from_to_bb = from_bb | to_bb;
-
-  pieces_[playing][moved]   ^= from_to_bb;
-  player_occupied_[playing] ^= from_to_bb;
-
-  if (captured_piece) {
-    const int captured = static_cast<int>(std::get<1>(captured_piece.value()));
-    pieces_[opponent][captured] ^= to_bb;
-    player_occupied_[opponent]  ^= to_bb;
-  } else {
-    occupied_.flip(to);
-    occupied_45_.flip(to);
-    occupied_90_.flip(to);
-    occupied_135_.flip(to);
-  }
-
-  occupied_.flip(from);
-  occupied_45_.flip(from);
-  occupied_90_.flip(from);
-  occupied_135_.flip(from);
+  move_pieces(from, to, pieces_[playing][moving], player_occupied_[playing]);
+  remove_pieces(to, pieces_[opponent][capturing], player_occupied_[opponent]);
+  remove_pieces(from, occupied_, occupied_45_, occupied_90_, occupied_135_);
 
   update_attack_boards();
 }
